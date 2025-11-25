@@ -1,0 +1,61 @@
+.scenario-canvas {
+  position: relative;
+  flex: 1;
+  background: #f8f9fa;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+.canvas-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+.scenario-item {
+  position: absolute;
+  padding: 12px 16px;
+  background: white;
+  border: 2px solid #007bff;
+  border-radius: 6px;
+  cursor: move;
+  user-select: none;
+  min-width: 80px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.scenario-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.scenario-item.selected {
+  border-color: #dc3545;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+}
+
+.drop-zone-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  color: #007bff;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}

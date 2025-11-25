@@ -1,0 +1,30 @@
+.characters-creation {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.character-left,
+.character-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.character-left {
+  background-color: #f8f9fa;
+  transform: rotate(90deg);
+  transform-origin: center;
+}
+
+.character-right {
+  background-color: #e9ecef;
+  transform: rotate(-90deg);
+  transform-origin: center;
+}

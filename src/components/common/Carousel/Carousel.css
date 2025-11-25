@@ -1,0 +1,151 @@
+.carousel {
+  position: relative;
+  padding: 15px;
+  background: #f8f9fa;
+}
+
+.carousel-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 10px 0;
+  min-height: 120px;
+  align-items: center;
+}
+
+.carousel-container::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  background: white;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  cursor: grab;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.carousel-item:hover {
+  border-color: #007bff;
+  transform: translateY(-2px);
+}
+
+.carousel-item:active {
+  cursor: grabbing;
+}
+
+.item-preview {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.item-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.2;
+  max-width: 70px;
+  word-wrap: break-word;
+}
+
+.management-item {
+  cursor: pointer;
+}
+
+.management-item:hover {
+  border-color: #28a745;
+}
+
+.add-new-item {
+  border: 2px dashed #6c757d;
+  background: #f8f9fa;
+  cursor: pointer;
+}
+
+.add-new-item:hover {
+  border-color: #007bff;
+  background: #e7f3ff;
+}
+
+.add-new-item .item-preview {
+  background: #6c757d;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background: white;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  color: #007bff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-arrow:hover {
+  background: #007bff;
+  color: white;
+}
+
+.carousel-arrow-prev {
+  left: 5px;
+}
+
+.carousel-arrow-next {
+  right: 5px;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  background: #dee2e6;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carousel-dot.active {
+  background: #007bff;
+}
+
+.carousel-dot:hover {
+  background: #adb5bd;
+}

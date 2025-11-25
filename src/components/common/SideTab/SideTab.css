@@ -1,0 +1,135 @@
+.side-tab {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  
+}
+
+.side-tab-left {
+  flex-direction: row;
+}
+
+.side-tab-left .side-tab-trigger {
+  order: 1;
+}
+
+.side-tab-left .side-tab-content {
+  order: 2;
+  margin-left: -10px;
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.side-tab-left.side-tab-open .side-tab-content {
+  transform: translateX(0);
+  opacity: 1;
+  margin-left: 0;
+}
+
+.side-tab-right {
+  flex-direction: row-reverse;
+}
+
+.side-tab-right .side-tab-trigger {
+  order: 2;
+}
+
+.side-tab-right .side-tab-content {
+  order: 2;
+  margin-right: -10px;
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.side-tab-right.side-tab-open .side-tab-content {
+  transform: translateX(0);
+  opacity: 1;
+  margin-right: 0;
+}
+
+.side-tab-trigger {
+  width: 60px;
+  height: 60px;
+  background: #007bff;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 20;
+  transition: all 0.2s ease;
+  position: absolute;
+}
+
+.side-tab-trigger:hover {
+  background: #0056b3;
+  transform: scale(1.05);
+}
+
+.tab-icon {
+  font-size: 24px;
+  color: white;
+}
+
+.tab-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #dc3545;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+.side-tab-content {
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 2px solid #007bff;
+  max-height: 60px ;
+  min-width: 300px;
+  max-width: 400px;
+  transition: all 0.3s ease;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.tab-header {
+  background: #007bff;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tab-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.item-count {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tab-body {
+  padding: 0;
+  max-height: 400px;
+  overflow: hidden;
+}
