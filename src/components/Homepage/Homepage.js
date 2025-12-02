@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './Homepage.css';
 import CharacterCreation from '../CharacterCreation/CharacterCreation';
 import ScenarioCreation from '../ScenarioCreation/ScenarioCreation';
+import ScenarioSelection from '../ScenarioSelection/ScenarioSelection';
 import Button from '../common/Button/Button';
 
 function Homepage() {
@@ -14,7 +15,7 @@ function Homepage() {
 
   const handleCharactersComplete = (characters) => {
     setCreatedCharacters(characters);
-    setCurrentView('scenario-creation');
+    setCurrentView('scenario-selection');
   };
 
   const handleBackToHome = () => {
@@ -41,6 +42,15 @@ function Homepage() {
       <ScenarioCreation 
         onBack={() => setCurrentView('character-creation')}
         onComplete={handleScenarioComplete}
+        characters={createdCharacters}
+      />
+    );
+  }
+
+  if (currentView === 'scenario-selection') {
+    return (
+      <ScenarioSelection 
+        onBack={() => setCurrentView('character-creation')}
         characters={createdCharacters}
       />
     );
