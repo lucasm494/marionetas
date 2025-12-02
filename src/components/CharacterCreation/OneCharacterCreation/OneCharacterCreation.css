@@ -78,3 +78,115 @@
 .right-side-tabs > :last-child {
   grid-row: 2; /* DoneButton na base */
 }
+
+/* Warning message */
+.warning-message {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff6b6b;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  z-index: 100;
+  animation: fadeInOut 3s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.warning-message p {
+  margin: 0;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; top: 10px; }
+  10% { opacity: 1; top: 20px; }
+  90% { opacity: 1; top: 20px; }
+  100% { opacity: 0; top: 30px; }
+}
+
+/* Character name display */
+.character-name-display {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-align: center;
+  min-width: 150px;
+}
+
+.character-name-display h3 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.character-name-display .hint {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Unsaved changes indicator */
+.unsaved-indicator {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffc107;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+  z-index: 50;
+  animation: slideUp 0.3s ease-out;
+}
+
+.unsaved-indicator span {
+  white-space: nowrap;
+}
+
+.pulsating-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ff5722;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    bottom: 0;
+  }
+  to {
+    opacity: 1;
+    bottom: 10px;
+  }
+}
+
+/* Color hint in name display */
+.character-name-display .color-hint {
+  margin: 2px 0 0 0;
+  font-size: 10px;
+  color: #ff9800;
+  font-style: italic;
+  font-weight: 500;
+}
