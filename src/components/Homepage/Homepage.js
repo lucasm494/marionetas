@@ -47,6 +47,22 @@ function Homepage() {
     );
   }
 
+  if (currentView === 'scenario-selection') {
+    return (
+      <ScenarioSelection 
+        onBack={() => setCurrentView('character-creation')}
+        onComplete={handleScenarioComplete}
+        characters={createdCharacters}
+      />
+    );
+  }
+
+  if (currentView === 'theater') {
+    return (
+      <Theater onBack={() => setCurrentView('scenario-selection')} />
+    );
+  }
+
   return (
     <div className="homepage">
       <h1>Início</h1>

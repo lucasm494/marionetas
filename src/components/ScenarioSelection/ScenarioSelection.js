@@ -7,7 +7,7 @@ import hat3 from '../../assets/items/hat3.png';
 import DoneButton from '../common/DoneButton/DoneButton';
 
 
-function ScenarioSelection({ onBack }) {
+function ScenarioSelection({ onBack , onComplete }) {
   const [selectedScenario, setSelectedScenario] = useState(null);
 
   const handleScenarioClick = (scenario) => {
@@ -41,7 +41,7 @@ function ScenarioSelection({ onBack }) {
 
 
       <Button onClick={onBack}>Voltar</Button>
-      <DoneButton enabled={selectedScenario !== null} onClick={() => alert(`Cenário ${selectedScenario} selecionado!`)} />
+      <DoneButton enabled={selectedScenario !== null} onClick={onComplete} />
     </div>
   );
 }
