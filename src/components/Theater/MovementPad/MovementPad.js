@@ -6,8 +6,9 @@ function MovementPad({ value = { x: 0.5, y: 0.5 }, onChange }) {
 	const knobRef = useRef(null);
 	const [size, setSize] = useState({ width: 0, height: 0 });
 	const [dragging, setDragging] = useState(false);
-	// ref to mark this instance as the active drag target (avoids stale closures)
-	const activeRef = useRef(false);
+	// ref to mark this instance's active pointer/touch id (allows multitouch)
+	// values: null (inactive), number (pointerId / touch identifier), or 'mouse'
+	const activeIdRef = useRef(null);
 
 	// measure container size (the container will be sized by CSS)
 	useEffect(() => {
@@ -46,14 +47,24 @@ function MovementPad({ value = { x: 0.5, y: 0.5 }, onChange }) {
 		if (!container) return;
 
 		const onMove = (e) => {
-			// only handle moves for the active drag instance
-			if (!activeRef.current) return;
+			// only handle moves for the active drag id for this instance
 			const rect = container.getBoundingClientRect();
 			let clientX, clientY;
-			if (e.touches && e.touches[0]) {
-				clientX = e.touches[0].clientX;
-				clientY = e.touches[0].clientY;
+			if (e.type && e.type.startsWith('pointer')) {
+				// pointer events include pointerId
+				if (activeIdRef.current == null || e.pointerId !== activeIdRef.current) return;
+				clientX = e.clientX;
+				clientY = e.clientY;
+			} else if (e.touches && e.touches.length) {
+				// touch events: find the touch with matching identifier
+				const id = activeIdRef.current;
+				const touch = Array.from(e.touches).find((t) => t.identifier === id);
+				if (!touch) return;
+				clientX = touch.clientX;
+				clientY = touch.clientY;
 			} else {
+				// mouse fallback
+				if (activeIdRef.current !== 'mouse') return;
 				clientX = e.clientX;
 				clientY = e.clientY;
 			}
@@ -66,8 +77,19 @@ function MovementPad({ value = { x: 0.5, y: 0.5 }, onChange }) {
 		};
 
 		const onUp = (e) => {
+			// only handle the up for the active id
+			if (e.type && e.type.startsWith('pointer')) {
+				if (activeIdRef.current == null || e.pointerId !== activeIdRef.current) return;
+			} else if (e.changedTouches && e.changedTouches.length) {
+				const id = activeIdRef.current;
+				const touch = Array.from(e.changedTouches).find((t) => t.identifier === id);
+				if (!touch) return;
+			} else {
+				// mouse
+				if (activeIdRef.current !== 'mouse') return;
+			}
 			setDragging(false);
-			activeRef.current = false;
+			activeIdRef.current = null;
 			window.removeEventListener('pointermove', onMove);
 			window.removeEventListener('pointerup', onUp);
 			window.removeEventListener('mousemove', onMove);
@@ -80,14 +102,21 @@ function MovementPad({ value = { x: 0.5, y: 0.5 }, onChange }) {
 		const startDrag = (startEvent) => {
 			startEvent.preventDefault();
 			setDragging(true);
-			activeRef.current = true;
 			console.debug('MovementPad: startDrag', startEvent.type);
 
-			// prefer pointer events when available
-			const pointerId = startEvent.pointerId;
-			if (pointerId != null && knobRef.current && knobRef.current.setPointerCapture) {
-				try { knobRef.current.setPointerCapture(pointerId); } catch (err) {}
+			// determine active id for this drag (pointerId, touch identifier, or 'mouse')
+			let id = null;
+			if (startEvent.pointerId != null) {
+				id = startEvent.pointerId;
+				if (knobRef.current && knobRef.current.setPointerCapture) {
+					try { knobRef.current.setPointerCapture(id); } catch (err) {}
+				}
+			} else if (startEvent.touches && startEvent.touches[0]) {
+				id = startEvent.touches[0].identifier;
+			} else {
+				id = 'mouse';
 			}
+			activeIdRef.current = id;
 
 			// add move/up listeners to window (pointer preferred)
 			window.addEventListener('pointermove', onMove);
