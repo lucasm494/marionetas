@@ -36,8 +36,11 @@ function MovementPad({ value = { x: 0.5, y: 0.5 }, onChange }) {
 	}, []);
 
 	// convert value (0..1) to knob position
-	const knobLeft = size.width * (value.x || 0);
-	const knobTop = size.height * (value.y || 0);
+	// compute knob position such that the knob stays fully inside the pad
+	const knobSize = knobRef.current ? knobRef.current.offsetWidth : 18;
+	const knobHalf = knobSize / 2;
+	const knobLeft = (size.width - knobSize) * (value.x || 0) + knobHalf;
+	const knobTop = (size.height - knobSize) * (value.y || 0) + knobHalf;
 
 	// Use explicit mouse/touch handlers attached when dragging starts.
 	useEffect(() => {
@@ -50,6 +53,11 @@ function MovementPad({ value = { x: 0.5, y: 0.5 }, onChange }) {
 			// only handle moves for the active drag id for this instance
 			const rect = container.getBoundingClientRect();
 			let clientX, clientY;
+			// get knob size for edge clamping
+			const knobW = knobRef.current ? knobRef.current.offsetWidth : 18;
+			const knobH = knobRef.current ? knobRef.current.offsetHeight : 18;
+			const halfW = knobW / 2;
+			const halfH = knobH / 2;
 			if (e.type && e.type.startsWith('pointer')) {
 				// pointer events include pointerId
 				if (activeIdRef.current == null || e.pointerId !== activeIdRef.current) return;
@@ -69,10 +77,13 @@ function MovementPad({ value = { x: 0.5, y: 0.5 }, onChange }) {
 				clientY = e.clientY;
 			}
 			if (clientX == null || clientY == null) return;
-			const x = Math.min(Math.max(0, clientX - rect.left), rect.width);
-			const y = Math.min(Math.max(0, clientY - rect.top), rect.height);
-			const nx = rect.width ? x / rect.width : 0;
-			const ny = rect.height ? y / rect.height : 0;
+			// clamp pointer so knob center stays within [half, rect - half]
+			const rawX = clientX - rect.left;
+			const rawY = clientY - rect.top;
+			const clampX = Math.min(Math.max(halfW, rawX), Math.max(halfW, rect.width - halfW));
+			const clampY = Math.min(Math.max(halfH, rawY), Math.max(halfH, rect.height - halfH));
+			const nx = rect.width > knobW ? (clampX - halfW) / (rect.width - knobW) : 0;
+			const ny = rect.height > knobH ? (clampY - halfH) / (rect.height - knobH) : 0;
 			onChange && onChange({ x: nx, y: ny });
 		};
 
