@@ -1,3 +1,5 @@
+/* CharacterCreation.css - Estilos para o painel de criação de personagens */
+
 .characters-creation {
   display: flex;
   height: 100vh;
@@ -10,13 +12,13 @@
 }
 
 .character-left {
-  background-color: #f8f9fa;
+  background-color: #f8f9fa; /* Painel esquerdo */
   transform: rotate(90deg);
   transform-origin: center;
 }
 
 .character-right {
-  background-color: #e9ecef;
+  background-color: #e9ecef; /* Painel direito */
   transform: rotate(-90deg);
   transform-origin: center;
 }

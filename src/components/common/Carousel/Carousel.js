@@ -1,6 +1,8 @@
-
 import { useState, useRef, useEffect } from 'react';
 import './Carousel.css';
+import { categoryToTypeMap } from '../../../config/itemPositions'; // ← Importa
+// Adiciona esta importação no topo do ficheiro
+import { getPositionForItemType } from '../../../config/itemPositions';
 
 function Carousel({ 
   items = [], 
@@ -8,19 +10,18 @@ function Carousel({
   type = 'items', 
   onAddNew, 
   selectedColor,
-  panelId // ← NOVO: Recebe identificador do painel
+  panelId
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef(null);
   const activeDragsRef = useRef(new Map());
-  const lastTapRef = useRef(0); // Para detectar double tap
+  const lastTapRef = useRef(0);
 
   const startTouchDrag = (e, item, idx) => {
-    // Evitar conflito com toque rápido (double tap)
     const now = Date.now();
     const timeSinceLastTap = now - lastTapRef.current;
     
-    if (timeSinceLastTap < 300) { // Double tap detection
+    if (timeSinceLastTap < 300) {
       console.log(`[carousel ${panelId}] Double tap detected, ignoring drag`);
       e.stopPropagation();
       e.preventDefault();
@@ -29,29 +30,28 @@ function Carousel({
     
     lastTapRef.current = now;
 
-    // Apenas para touch/pointer
     if (e.pointerType === 'mouse') return;
 
-    // Prevenir comportamento padrão
     e.stopPropagation();
     e.preventDefault?.();
 
     const pointerId = e.pointerId;
     
-    // Verificar se este pointer já está arrastando
     if (activeDragsRef.current.has(pointerId)) {
       console.log(`[carousel ${panelId}] Pointer ${pointerId} já está arrastando`);
       return;
     }
 
-   const dragItem = { 
-    ...item, 
-    id: item.id || `${Date.now()}_${idx}`,
-    type: item.type // ← Garantir que o type está presente
-  };
-  
-  console.log(`[carousel ${panelId}] Iniciando arrasto: ${dragItem.name}, type: ${dragItem.type}, pointer: ${pointerId}`);
+    // GARANTIR QUE O ITEM TEM TYPE
+    const dragItem = { 
+      ...item, 
+      id: item.id || `${Date.now()}_${idx}`,
+      type: item.type || categoryToTypeMap[type] || 'default' // ← Adiciona type se faltar
+    };
+    
+    console.log(`[carousel ${panelId}] Dragging: ${dragItem.name}, type: ${dragItem.type}, pointer: ${pointerId}`);
 
+    // ... (resto do código do ghost mantém-se igual)
     const ghost = document.createElement('div');
     ghost.className = 'drag-ghost';
     ghost.setAttribute('data-panel-id', panelId);
@@ -98,7 +98,7 @@ function Carousel({
     document.body.appendChild(ghost);
     activeDragsRef.current.set(pointerId, { item: dragItem, ghost });
 
-    console.log(`[carousel ${panelId}] Ghost criado para pointer ${pointerId}`);
+    console.log(`[carousel ${panelId}] Ghost created for pointer ${pointerId}`);
   };
 
   // Handlers globais para múltiplos arrastos simultâneos
@@ -114,84 +114,87 @@ function Carousel({
       }
     };
 
-    const onPointerUp = (up) => {
-      const drag = activeDragsRef.current.get(up.pointerId);
-      if (!drag) return;
+   const onPointerUp = (up) => {
+  const drag = activeDragsRef.current.get(up.pointerId);
+  if (!drag) return;
 
-      const { item: dragItem, ghost } = drag;
+  const { item: dragItem, ghost } = drag;
 
-      console.log(`[carousel ${panelId}] Soltando item ${dragItem.name} em x:${Math.round(up.clientX)}, y:${Math.round(up.clientY)}`);
+  console.log(`[carousel ${panelId}] Soltando item ${dragItem.name}, type: ${dragItem.type}`);
 
-      // Encontrar o character-body correto baseado no panelId
-      let targetBody = null;
-      const allBodies = document.querySelectorAll('.character-body');
-      
-      for (let body of allBodies) {
-        const bodyPanelId = body.getAttribute('data-panel-id');
-        const rect = body.getBoundingClientRect();
-        const isInside = (
-          up.clientX >= rect.left &&
-          up.clientX <= rect.right &&
-          up.clientY >= rect.top &&
-          up.clientY <= rect.bottom
-        );
-        
-        if (isInside) {
-          // Preferir o body com o mesmo panelId
-          if (bodyPanelId === panelId) {
-            targetBody = body;
-            console.log(`[carousel ${panelId}] Encontrado body com panelId correspondente`);
-            break;
-          } else if (!targetBody) {
-            targetBody = body; // Fallback para qualquer body
-          }
-        }
+  // Encontrar o character-body correto
+  let targetBody = null;
+  const allBodies = document.querySelectorAll('.character-body');
+  
+  for (let body of allBodies) {
+    const bodyPanelId = body.getAttribute('data-panel-id');
+    const rect = body.getBoundingClientRect();
+    const isInside = (
+      up.clientX >= rect.left &&
+      up.clientX <= rect.right &&
+      up.clientY >= rect.top &&
+      up.clientY <= rect.bottom
+    );
+    
+    if (isInside) {
+      if (bodyPanelId === panelId) {
+        targetBody = body;
+        break;
+      } else if (!targetBody) {
+        targetBody = body;
       }
+    }
+  }
 
-      // Se encontrou um body válido, disparar evento
-      if (targetBody) {
-        const rect = targetBody.getBoundingClientRect();
-        const relativeX = up.clientX - rect.left;
-        const relativeY = up.clientY - rect.top;
-        const percentX = (relativeX / rect.width) * 100;
-        const percentY = (relativeY / rect.height) * 100;
+  if (targetBody) {
+    // DECIDE QUE POSIÇÃO USAR
+    let position;
+    
+    if (dragItem.type === 'color') {
+      // Para cores, usa posição do cursor (ou posição específica do config se quiseres)
+      const rect = targetBody.getBoundingClientRect();
+      position = {
+        x: ((up.clientX - rect.left) / rect.width) * 100,
+        y: ((up.clientY - rect.top) / rect.height) * 100
+      };
+      // Limita entre 0 e 100
+      position.x = Math.max(0, Math.min(100, position.x));
+      position.y = Math.max(0, Math.min(100, position.y));
+    } else {
+      // Para todos os outros itens, usa a POSIÇÃO FIXA do config
+      position = getPositionForItemType(dragItem.type);
+      console.log(`📍 [carousel ${panelId}] Posição fixa para ${dragItem.type}:`, position);
+    }
 
-        const dropDetail = {
-          ...dragItem,
-          position: {
-            x: Math.max(0, Math.min(100, percentX)),
-            y: Math.max(0, Math.min(100, percentY))
-          }
-        };
-
-        // Disparar evento customizado
-        targetBody.dispatchEvent(new CustomEvent('carousel-item-drop', { 
-          detail: dropDetail,
-          bubbles: true
-        }));
-        
-        console.log(`[carousel ${panelId}] Item dropado com sucesso em x:${Math.round(dropDetail.position.x)}%, y:${Math.round(dropDetail.position.y)}%`);
-      } else {
-        console.log(`[carousel ${panelId}] Drop rejeitado - fora do character-body`);
-      }
-
-      // Cleanup do ghost
-      if (ghost) {
-        // Animar desaparecimento
-        ghost.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-        ghost.style.opacity = '0';
-        ghost.style.transform = 'translate(-50%, -50%) scale(0.8)';
-        
-        setTimeout(() => {
-          if (ghost.parentElement) {
-            ghost.parentElement.removeChild(ghost);
-          }
-        }, 200);
-      }
-      
-      activeDragsRef.current.delete(up.pointerId);
-      console.log(`[carousel ${panelId}] Arrasto finalizado, restantes: ${activeDragsRef.current.size}`);
+    const dropDetail = {
+      ...dragItem,
+      position: position
     };
+
+    // Disparar evento
+    targetBody.dispatchEvent(new CustomEvent('carousel-item-drop', { 
+      detail: dropDetail,
+      bubbles: true
+    }));
+    
+    console.log(`✅ [carousel ${panelId}] Item "${dragItem.name}" dropado na posição fixa:`, position);
+  }
+
+  // Cleanup
+  if (ghost) {
+    ghost.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+    ghost.style.opacity = '0';
+    ghost.style.transform = 'translate(-50%, -50%) scale(0.8)';
+    
+    setTimeout(() => {
+      if (ghost.parentElement) {
+        ghost.parentElement.removeChild(ghost);
+      }
+    }, 200);
+  }
+  
+  activeDragsRef.current.delete(up.pointerId);
+};
 
     const onPointerCancel = (cancel) => {
       const drag = activeDragsRef.current.get(cancel.pointerId);
@@ -285,24 +288,16 @@ function Carousel({
       onItemSelect(item);
     }
   };
-
-  return (
+  
+return (
     <div className="carousel" data-panel-id={panelId}>
       {/* Navigation Arrows */}
       {items.length > 1 && (
         <>
-          <button 
-            className="carousel-arrow carousel-arrow-prev" 
-            onClick={prevItem}
-            onTouchStart={(e) => e.stopPropagation()}
-          >
+          <button className="carousel-arrow carousel-arrow-prev" onClick={prevItem}>
             ‹
           </button>
-          <button 
-            className="carousel-arrow carousel-arrow-next" 
-            onClick={nextItem}
-            onTouchStart={(e) => e.stopPropagation()}
-          >
+          <button className="carousel-arrow carousel-arrow-next" onClick={nextItem}>
             ›
           </button>
         </>
@@ -313,19 +308,16 @@ function Carousel({
         className="carousel-container"
         ref={carouselRef}
         onScroll={handleScroll}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
         style={{ touchAction: 'pan-x pinch-zoom' }}
       >
         {type === 'items' ? (
-          // Items Carousel (para roupas, acessórios)
+          // Items Carousel
           <>
             {items.map((item, index) => (
               <div
                 key={item.id || index}
                 className="carousel-item"
                 onPointerDown={(e) => startTouchDrag(e, item, index)}
-                onTouchStart={(e) => e.stopPropagation()}
                 title={item.name}
                 data-item-type={item.type}
               >
@@ -334,11 +326,7 @@ function Carousel({
                     <img 
                       src={item.image} 
                       alt={item.name}
-                      style={{ 
-                        width: '100%', 
-                        height: '100%', 
-                        objectFit: 'contain'
-                      }}
+                      style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                     />
                   ) : (
                     <span>{item.emoji || '👕'}</span>
@@ -356,16 +344,9 @@ function Carousel({
                 key={item.id || index}
                 className={`carousel-item color-item ${selectedColor === item.color ? 'color-selected' : ''}`}
                 onClick={(e) => handleItemClick(e, item)}
-                onTouchEnd={(e) => {
-                  e.stopPropagation();
-                  handleItemClick(e, item);
-                }}
                 title={item.name}
               >
-                <div 
-                  className="item-preview color-preview"
-                  style={{ backgroundColor: item.color }}
-                />
+                <div className="item-preview color-preview" style={{ backgroundColor: item.color }} />
                 <span className="item-name">{item.name}</span>
               </div>
             ))}
@@ -378,35 +359,16 @@ function Carousel({
                 key={character.id || index}
                 className="carousel-item management-item"
                 onClick={(e) => handleItemClick(e, character)}
-                onTouchEnd={(e) => {
-                  e.stopPropagation();
-                  handleItemClick(e, character);
-                }}
                 title={`${character.name} (${character.items?.length || 0} items)`}
               >
                 <div className="item-preview character-preview">
                   {character.emoji || '👤'}
-                  {character.items && character.items.length > 0 && (
-                    <div className="character-badge">
-                      {character.items.length}
-                    </div>
-                  )}
                 </div>
-                <span className="item-name">{character.name}</span>
               </div>
             ))}
             {/* Add New Button */}
-            <div 
-              className="carousel-item add-new-item"
-              onClick={onAddNew}
-              onTouchEnd={(e) => {
-                e.stopPropagation();
-                onAddNew();
-              }}
-            >
-              <div className="item-preview">
-                +
-              </div>
+            <div className="carousel-item add-new-item" onClick={onAddNew}>
+              <div className="item-preview">+</div>
               <span className="item-name">New Character</span>
             </div>
           </>

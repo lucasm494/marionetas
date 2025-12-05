@@ -18,7 +18,6 @@ function OneCharacterCreation({
   onAddNewCharacter,
   onSwitchCharacter,
   isActivePanel = true,
-  panelSide = 'left',
   panelId // ← NOVO: Recebe identificador único
 }) {
   const [characterItems, setCharacterItems] = useState([]);
@@ -27,12 +26,15 @@ function OneCharacterCreation({
   const [selectedColor, setSelectedColor] = useState(null);
   const [currentCharacter, setCurrentCharacter] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
+  // Adiciona este state no início do componente:
+const [isAddingNewCharacter, setIsAddingNewCharacter] = useState(false);
   
   // Ref para controlar save
   const saveTimeoutRef = useRef(null);
 
   // Carrega o personagem atual quando muda
   useEffect(() => {
+    console.log('current character: ', initialCharacter )
     if (initialCharacter) {
       console.log(`📥 [${panelId}] Loading character:`, initialCharacter.name, 'Items:', initialCharacter.items?.length || 0);
       setCurrentCharacter(initialCharacter);
@@ -40,38 +42,7 @@ function OneCharacterCreation({
       setSelectedItem(null);
       setSelectedColor(null);
     }
-  }, [initialCharacter, panelSide, panelId]);
-
-  // Salva automaticamente quando characterItems muda
-  useEffect(() => {
-    if (!currentCharacter || characterItems.length === 0) return;
-    
-    // Debounce para evitar saves excessivos
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-    
-    saveTimeoutRef.current = setTimeout(() => {
-      const characterToSave = {
-        ...currentCharacter,
-        items: [...characterItems], // Cópia do array
-        updatedAt: new Date().toISOString(),
-        isSaved: true
-      };
-      
-      console.log(`💾 [${panelId}] Auto-saving character:`, currentCharacter.name, 'Items count:', characterItems.length);
-      
-      if (onSaveCharacter) {
-        onSaveCharacter(characterToSave);
-      }
-    }, 400); // 400ms debounce
-    
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, [characterItems, currentCharacter, onSaveCharacter, panelId]);
+  }, [initialCharacter, panelId]);
 
   const handleItemDrop = (item) => {
     console.log(`📦 [${panelId}] Handle item drop received:`, item);
@@ -182,52 +153,95 @@ function OneCharacterCreation({
     }
   };
 
-  const toggleTab = (tabName) => {
-    console.log(`📂 [${panelId}] Toggling tab:`, tabName, 'Current open:', openTab);
-    setOpenTab(openTab === tabName ? null : tabName);
-  };
+  // Substitui a função toggleTab por:
+const toggleTab = (tabName) => {
+  console.log(`📂 [${panelId}] Toggling tab:`, tabName, 'Current open:', openTab);
+  
+  // Se está a abrir a tab de characters, primeiro fecha qualquer tab aberta
+  // e só depois de um delay abre a nova
+  if (tabName === 'characters' && openTab !== 'characters') {
+    // 1. Fecha a tab atual (se houver)
+    setOpenTab(null);
+    
+    // 2. Espera um pouco para a animação de fechar
+    setTimeout(() => {
+      // 3. Abre a tab de characters
+      setOpenTab('characters');
+      console.log(`✅ [${panelId}] Tab de characters aberta após delay`);
+    }, 100); // 100ms é suficiente para o clique "passar"
+    
+    return;
+  }
+  
+  // Para outras tabs, comportamento normal
+  setOpenTab(openTab === tabName ? null : tabName);
+};
 
-  const handleAddCharacter = () => {
-    console.log(`👥 [${panelId}] Add character clicked`);
+  // Atualiza o handleAddCharacter:
+const handleAddCharacter = () => {
+  console.log(`👥 [${panelId}] Add character clicked`);
+  
+  // SETAR A FLAG ANTES DE QUALQUER COISA
+  setIsAddingNewCharacter(true);
+  
+  if (characterItems.length === 0) {
+    alert('Please add at least one item to your character before creating a new character.');
+    setIsAddingNewCharacter(false);
+    return;
+  } else {
+    // Cria o objeto do personagem completo
+    const completedCharacter = {
+      ...currentCharacter,
+      items: characterItems,
+      updatedAt: new Date().toISOString(),
+      isSaved: true
+    };
+    onSaveCharacter && onSaveCharacter(completedCharacter);
+  }
+  
+  // Pequeno timeout para garantir a ordem das operações
+  setTimeout(() => {
     if (onAddNewCharacter) {
-      const newCharacter = onAddNewCharacter();
-      if (newCharacter) {
-        console.log(`👥 [${panelId}] New character created:`, newCharacter);
-        // Limpa timeout pendente
-        if (saveTimeoutRef.current) {
-          clearTimeout(saveTimeoutRef.current);
-        }
-        // Atualiza para o novo personagem
-        setCurrentCharacter(newCharacter);
-        setCharacterItems([]);
-        setSelectedItem(null);
-        setSelectedColor(null);
-      } else {
-        // Mostra aviso se não pode criar
-        setShowWarning(true);
-        setTimeout(() => setShowWarning(false), 3000);
-      }
+      onAddNewCharacter(currentCharacter);
     }
-  };
+    // Remover a flag após as operações completarem
+    setTimeout(() => setIsAddingNewCharacter(false), 500);
+  }, 50);
+};
 
-  const handleCharacterSelect = (character) => {
-    console.log(`👤 [${panelId}] Character selected:`, character.name);
-    
-    // Limpa timeout pendente antes de mudar
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
+  // Atualiza o handleCharacterSelect para ignorar se estiver a adicionar novo:
+const handleCharacterSelect = (character) => {
+  // SE ESTIVER A ADICIONAR NOVO, IGNORAR
+  if (isAddingNewCharacter) {
+    console.log(`⏸️ [${panelId}] Ignorando seleção - a adicionar novo personagem`);
+    return;
+  }
+  
+  console.log(`👤 [${panelId}] Character selected:`, character.name);
+
+  if (characterItems.length > 0){
+  // Cria o objeto do personagem completo
+    const completedCharacter = {
+      ...currentCharacter,
+      items: characterItems,
+      updatedAt: new Date().toISOString(),
+      isSaved: true
+    };
+    onSaveCharacter && onSaveCharacter(completedCharacter);
     }
-    
-    // Tenta alternar para o personagem selecionado
-    if (onSwitchCharacter) {
-      const success = onSwitchCharacter(character, panelSide);
-      if (!success) {
-        // Mostra aviso se o personagem já está sendo editado
-        setShowWarning(true);
-        setTimeout(() => setShowWarning(false), 3000);
-      }
+  
+  if (saveTimeoutRef.current) {
+    clearTimeout(saveTimeoutRef.current);
+  }
+  
+  if (onSwitchCharacter) {
+    const success = onSwitchCharacter(character, panelId);
+    if (!success) {
+      setShowWarning(true);
+      setTimeout(() => setShowWarning(false), 3000);
     }
-  };
+  }
+};
 
   const handleDoneClick = () => {
     console.log(`✅ [${panelId}] Done clicked`);
@@ -237,7 +251,8 @@ function OneCharacterCreation({
     }
     
     if (characterItems.length === 0) {
-      alert('Please add at least one item to your character before completing.');
+      setShowWarning(true);
+      setTimeout(() => setShowWarning(false), 3000);
       return;
     }
     
@@ -264,9 +279,10 @@ function OneCharacterCreation({
 
   // Cleanup timeout no unmount
   useEffect(() => {
+    const timeout = saveTimeoutRef.current;
     return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
+      if (timeout) {
+        clearTimeout(timeout);
       }
     };
   }, []);
@@ -329,19 +345,11 @@ function OneCharacterCreation({
           <div className="warning-message">
             <p>
               {characterItems.length === 0 
-                ? 'Add at least one item to create a new character' 
-                : 'This character is already being edited in the other panel'}
+                ? 'Adiciona pelo menos um item à tua personagem' 
+                : 'Esta personagem está a ser editada pelo teu amigo'}
             </p>
           </div>
         )}
-        
-        {/* Character name display */}
-        <div className="character-name-display">
-          <h3>{currentCharacter?.name || 'Unnamed Character'}</h3>
-          {characterItems.length === 0 && (
-            <p className="hint">Add items to save this character</p>
-          )}
-        </div>
       </div>
 
       {/* Right Side - Grid interna */}

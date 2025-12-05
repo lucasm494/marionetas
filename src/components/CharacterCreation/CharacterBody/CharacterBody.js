@@ -1,7 +1,8 @@
-
 import './CharacterBody.css';
 import CharacterItem from './CharacterItem';
-import { useEffect } from 'react'; // ← Adicione esta importação
+import { useEffect } from 'react';
+import characterSilhouette from '../../../assets/corpo.svg';
+import { getPositionForItemType } from '../../../config/itemPositions'; // ← Importa
 
 function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem, onItemUpdate, panelId }) {
   const handleDragOver = (e) => {
@@ -9,60 +10,40 @@ function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem,
     e.dataTransfer.dropEffect = 'copy';
   };
 
-  const getPositionForItemType = (itemType) => {
-    const positionMap = {
-      'hat': { x: 50, y: 15 },
-      'top': { x: 50, y: 40 },
-      'pants': { x: 50, y: 65 },
-      'shoes': { x: 50, y: 85 },
-      'accessory': { x: 50, y: 30 }
-    };
-    
-    return positionMap[itemType] || { x: 50, y: 50 };
-  };
-
   const handleDrop = (e) => {
     e.preventDefault();
     const itemData = e.dataTransfer.getData('application/json');
     
-    console.log(`📦 [${panelId || 'CharacterBody'}] Drop event, data:`, itemData);
-    
     if (itemData) {
       try {
         const item = JSON.parse(itemData);
-        console.log(`📦 [${panelId || 'CharacterBody'}] Parsed item:`, item);
         
-        // Verifica se o item tem tipo
         if (!item.type) {
-          console.error(`❌ [${panelId || 'CharacterBody'}] Item missing type property:`, item);
+          console.error(`❌ [${panelId}] Item missing type property:`, item);
           return;
         }
         
+        // USA A FUNÇÃO DO CONFIG
         const position = getPositionForItemType(item.type);
-        console.log(`📍 [${panelId || 'CharacterBody'}] Position calculated:`, position, 'for type:', item.type);
+        console.log(`📍 [${panelId}] Position from config:`, position, 'for type:', item.type);
         
         onItemDrop({ ...item, position });
         
       } catch (error) {
-        console.error(`❌ [${panelId || 'CharacterBody'}] Error parsing dropped item:`, error, 'Data:', itemData);
+        console.error(`❌ [${panelId}] Error parsing dropped item:`, error);
       }
-    } else {
-      console.log(`❌ [${panelId || 'CharacterBody'}] No item data found in drop event`);
     }
   };
 
-  // NOVO: useEffect para lidar com eventos do Carousel
+  // Handler para drops do Carousel
   useEffect(() => {
     const handleCarouselDrop = (e) => {
-      console.log(`🎯 [${panelId}] Received carousel drop event:`, e.detail);
-      
-      // Certifique-se de que o item tenha um type
       if (!e.detail.type) {
         console.error(`❌ [${panelId}] Carousel drop item missing type:`, e.detail);
         return;
       }
       
-      // Usar posição do evento ou calcular baseado no tipo
+      // USA A FUNÇÃO DO CONFIG
       const position = e.detail.position || getPositionForItemType(e.detail.type);
       
       const itemToDrop = {
@@ -71,24 +52,21 @@ function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem,
         id: e.detail.id || `${e.detail.type}_${Date.now()}`
       };
       
-      console.log(`📍 [${panelId}] Final item to drop:`, itemToDrop);
+      console.log(`📍 [${panelId}] Dropping item at:`, position);
       onItemDrop(itemToDrop);
     };
 
-    // Adicionar listener para o evento customizado do Carousel
     const container = document.querySelector(`.character-body[data-panel-id="${panelId}"]`);
     if (container) {
       container.addEventListener('carousel-item-drop', handleCarouselDrop);
-      console.log(`✅ [${panelId}] Added carousel drop listener`);
     }
 
     return () => {
       if (container) {
         container.removeEventListener('carousel-item-drop', handleCarouselDrop);
-        console.log(`🧹 [${panelId}] Removed carousel drop listener`);
       }
     };
-  }, [panelId, onItemDrop]); // ← Dependências
+  }, [panelId, onItemDrop]);
 
   const handleItemUpdate = (updatedItem) => {
     onItemUpdate(updatedItem);
@@ -101,21 +79,16 @@ function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem,
       onDrop={handleDrop}
       data-panel-id={panelId}
     >
-      {/* Base skeleton */}
-      <div className="character-base">
-        <div className="head"></div>
-        <div className="up">
-          <div className="left-arm"></div>
-          <div className="tronco"></div>
-          <div className="right-arm"></div>
-        </div>
-        <div className="legs">
-          <div className="left-leg"></div>
-          <div className="right-leg"></div>
-        </div>
+      {/* Silhueta vetorial */}
+      <div className="character-silhouette">
+        <img 
+          src={characterSilhouette} 
+          alt="Character Silhouette" 
+          className="silhouette-image"
+        />
       </div>
       
-      {/* Placed items */}
+      {/* Items colocados */}
       {characterItems.map((item) => (
         <CharacterItem
           key={`${panelId}-${item.id}`}
@@ -129,7 +102,7 @@ function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem,
       
       {characterItems.length === 0 && (
         <div className="drop-hint">
-          <p>Drag items here to dress your character</p>
+          <p>Arrasta os itens para criares a tua personagem!</p>
         </div>
       )}
     </div>

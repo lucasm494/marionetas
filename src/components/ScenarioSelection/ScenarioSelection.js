@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import './ScenarioSelection.css';
 import Button from '../common/Button/Button';
-import hat1 from '../../assets/items/hat1.png';
-import hat2 from '../../assets/items/hat2.png';
-import hat3 from '../../assets/items/hat3.png';
+import images from '../../data/images';
 import DoneButton from '../common/DoneButton/DoneButton';
 
 
@@ -14,7 +12,7 @@ function ScenarioSelection({ onBack , onComplete }) {
     setSelectedScenario(scenario);
   };
 
-  const scenarioImages = [hat1, hat2, hat3, hat1];
+  const scenarioImages = [images.hat1, images.hat2, images.hat3, images.hat1];
 
   return (
     <div className="scenario-selection">

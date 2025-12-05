@@ -1,8 +1,5 @@
 // Importar todas as imagens
-import hat1 from '../assets/items/hat1.png';
-import hat2 from '../assets/items/hat2.png';
-import hat3 from '../assets/items/hat3.png';
-
+import images from './images';
 
 export const characterTabConfig = {
   hats: { icon: '👒', title: 'Hats', category: 'head' },
@@ -15,29 +12,30 @@ export const characterTabConfig = {
 
 export const characterToolbarItems = {
   hats: [
-    { id: 'hat1', name: 'Baseball Cap', image: hat1, type: 'hat' },
-    { id: 'hat2', name: 'Top Hat', image: hat2, type: 'hat' },
-    { id: 'hat3', name: 'Crown', image: hat3, type: 'hat' }
+    { id: 'hat1', name: 'Baseball Cap', image: images.hat1, type: 'hat' },
+    { id: 'hat2', name: 'Top Hat', image: images.hat2, type: 'hat' },
+    { id: 'hat3', name: 'Crown', image: images.hat3, type: 'hat' }
   ],
   tops: [
-    { id: 'top1', name: 'T-Shirt', image: hat1, type: 'top' },
-    { id: 'top2', name: 'Jacket', image: hat2, type: 'top' },
-    { id: 'top3', name: 'Dress', image: hat3, type: 'top' }
+    { id: 'top1', name: 'T-Shirt', image: images.top1, type: 'top' },
+    { id: 'top2', name: 'Jacket', image: images.top2, type: 'top' },
+    { id: 'top3', name: 'Dress', image: images.top3, type: 'top' }
   ],
   pants: [
-    { id: 'pants1', name: 'Jeans', image: hat1, type: 'pants' },
-    { id: 'pants2', name: 'Shorts', image: hat2, type: 'pants' },
-    { id: 'pants3', name: 'Skirt', image: hat3, type: 'pants' }
+    { id: 'pants1', name: 'Jeans', image: images.pants1, type: 'pants' },
+    { id: 'pants2', name: 'Shorts', image: images.pants2, type: 'pants' },
+    { id: 'pants3', name: 'Skirt', image: images.pants3, type: 'pants' }
   ],
   shoes: [
-    { id: 'shoes1', name: 'Sneakers', image: hat1, type: 'shoes' },
-    { id: 'shoes2', name: 'Boots', image: hat2, type: 'shoes' },
-    { id: 'shoes3', name: 'Sandals', image: hat3, type: 'shoes' }
+    { id: 'shoes1', name: 'Sneakers', image: images.shoes1, type: 'shoes' },
+    { id: 'shoes2', name: 'Boots', image: images.shoes2, type: 'shoes' },
+    { id: 'shoes3', name: 'Sandals', image: images.shoes3, type: 'shoes' }
   ],
   accessories: [
-    { id: 'acc1', name: 'Glasses', image: hat1, type: 'accessory' },
-    { id: 'acc2', name: 'Watch', image: hat2, type: 'accessory' },
-    { id: 'acc3', name: 'Necklace', image: hat3, type: 'accessory' }
+    { id: 'acc1', name: 'Glasses', image: images.acc1, type: 'accessory' },
+    { id: 'acc2', name: 'Watch', image: images.acc2, type: 'accessory' },
+    { id: 'acc3', name: 'Necklace', image: images.acc3, type: 'accessory' },
+    { id: 'acc4', name: 'Bag', image: images.acc4, type: 'bag' }
   ],
   colors: [
     { id: 'color1', name: 'Red', color: '#FF0000', type: 'color' },
@@ -54,47 +52,3 @@ export const characterToolbarItems = {
     { id: 'color12', name: 'White', color: '#FFFFFF', type: 'color' }
   ]
 };
-
-export const scenarioTabConfig = {
-  backgrounds: { icon: '🌅', title: 'Backgrounds' },
-  nature: { icon: '🌳', title: 'Nature' },
-  furniture: { icon: '🪑', title: 'Furniture' },
-  buildings: { icon: '🏠', title: 'Buildings' }
-};
-
-export const scenarioToolbarItems = {
-  backgrounds: [
-    { id: 101, name: 'Blue Sky', type: 'background', resizable: true, category: 'background', emoji: '🌅' },
-    { id: 102, name: 'Night Sky', type: 'background', resizable: true, category: 'background', emoji: '🌃' },
-    { id: 103, name: 'Mountains', type: 'background', resizable: true, category: 'background', emoji: '⛰️' },
-    { id: 104, name: 'Cityscape', type: 'background', resizable: true, category: 'background', emoji: '🏙️' },
-    { id: 105, name: 'Beach', type: 'background', resizable: true, category: 'background', emoji: '🏖️' },
-  ],
-  nature: [
-    { id: 201, name: 'Tree', type: 'nature', resizable: true, rotatable: true, category: 'nature', emoji: '🌳' },
-    { id: 202, name: 'Bush', type: 'nature', resizable: true, rotatable: true, category: 'nature', emoji: '🌿' },
-    { id: 203, name: 'Flower', type: 'nature', resizable: true, rotatable: true, category: 'nature', emoji: '🌷' },
-    { id: 204, name: 'Rock', type: 'nature', resizable: true, rotatable: true, category: 'nature', emoji: '🪨' },
-    { id: 205, name: 'Cactus', type: 'nature', resizable: true, rotatable: true, category: 'nature', emoji: '🌵' },
-  ],
-  furniture: [
-    { id: 301, name: 'Chair', type: 'furniture', resizable: true, rotatable: true, category: 'furniture', emoji: '🪑' },
-    { id: 302, name: 'Table', type: 'furniture', resizable: true, rotatable: true, category: 'furniture', emoji: '🪟' },
-    { id: 303, name: 'Sofa', type: 'furniture', resizable: true, rotatable: true, category: 'furniture', emoji: '🛋️' },
-    { id: 304, name: 'Bookshelf', type: 'furniture', resizable: true, rotatable: true, category: 'furniture', emoji: '📚' },
-    { id: 305, name: 'Bed', type: 'furniture', resizable: true, rotatable: true, category: 'furniture', emoji: '🛏️' },
-  ],
-  buildings: [
-    { id: 401, name: 'House', type: 'building', resizable: true, rotatable: false, category: 'building', emoji: '🏠' },
-    { id: 402, name: 'Castle', type: 'building', resizable: true, rotatable: false, category: 'building', emoji: '🏰' },
-    { id: 403, name: 'Shop', type: 'building', resizable: true, rotatable: false, category: 'building', emoji: '🏪' },
-    { id: 404, name: 'School', type: 'building', resizable: true, rotatable: false, category: 'building', emoji: '🏫' },
-  ]
-};
-
-export const sampleCharacters = [
-  { id: 1, name: 'Hero', type: 'character', category: 'character', emoji: '🦸‍♂️' },
-  { id: 2, name: 'Villain', type: 'character', category: 'character', emoji: '🦹‍♂️' },
-  { id: 3, name: 'Friend', type: 'character', category: 'character', emoji: '👫' },
-  { id: 4, name: 'Animal', type: 'character', category: 'character', emoji: '🐱' },
-];

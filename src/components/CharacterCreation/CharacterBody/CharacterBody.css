@@ -1,72 +1,51 @@
-
+/* CharacterBody.css */
 .character-body {
   position: relative;
-  width: 400px;  /* Aumentado de 300px para 400px */
-  height: 500px; /* Aumentado de 400px para 500px */
-  border: 2px dashed #ccc;
-  border-radius: 10px;
-  background: #f8f9fa;
+  width: 400px;
+  height: 500px;
+  border: 2px dashed #e0e0e0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   overflow: visible;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
-.character-base {
+.character-silhouette {
+  position: absolute;
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
   pointer-events: none;
-  padding: 30px; /* Aumentado o padding */
-  height: 100%;
+  z-index: 1;
 }
 
-.head {
-  border: 2px solid #333;
-  border-radius: 50%;
-  width: 100px; /* Aumentado de 80px para 100px */
-  height: 100px; /* Aumentado de 80px para 100px */
-  margin-bottom: 15px;
+.silhouette-image {
+  width: 70%; /* Ajusta o tamanho conforme necessário */
+  height: 85%;
+  object-fit: contain;
+  opacity: 0.15; /* Muito subtil */
+  filter: grayscale(100%) brightness(1.8); /* Torna mais claro e sem cor */
 }
 
-.up {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 15px;
-}
+/* Se quiseres a silhueta pontilhada: */
+/* Adiciona no SVG: stroke-dasharray="3,3" */
 
-.tronco {
-  width: 80px; /* Aumentado de 60px para 80px */
-  height: 100px; /* Aumentado de 80px para 100px */
-  border: 2px solid #333;
-}
-
-.left-arm, .right-arm {
-  width: 40px; /* Aumentado de 30px para 40px */
-  height: 80px; /* Aumentado de 60px para 80px */
-  border: 2px solid #333;
-}
-
-.legs {
-  display: flex;
-  flex-direction: row;
-}
-
-.left-leg, .right-leg {
-  width: 40px; /* Aumentado de 30px para 40px */
-  height: 100px; /* Aumentado de 80px para 100px */
-  border: 2px solid #333;
-}
-
-/* Drop hint */
 .drop-hint {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: #999;
+  color: #6c757d;
   font-style: italic;
   pointer-events: none;
   font-size: 16px;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 10px 20px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  border: 1px solid #dee2e6;
 }

@@ -1,52 +1,58 @@
+// Homepage.js - Componente principal da página inicial
 import { useState } from 'react';
 import './Homepage.css';
 import CharacterCreation from '../CharacterCreation/CharacterCreation';
-import ScenarioCreation from '../ScenarioCreation/ScenarioCreation';
-import Theater from '../Theater/theater';
 import ScenarioSelection from '../ScenarioSelection/ScenarioSelection';
 import Button from '../common/Button/Button';
+import Theater from '../Theater/theater';
 
+/**
+ * Componente principal da homepage.
+ * Controla a navegação entre as views principais: criação de personagem, seleção de cenário e teatro.
+ */
 function Homepage() {
+  // Estado para controlar a view atual
   const [currentView, setCurrentView] = useState('homepage');
+  // Estado para personagens criados
   const [createdCharacters, setCreatedCharacters] = useState([]);
+  // Estado para personagens em edição
+  const [editingCharacters, setEditingCharacters] = useState([]);
 
+  // Inicia novo teatro, indo para criação de personagem
   const handleNewTheater = () => {
+    setEditingCharacters([]);
     setCurrentView('character-creation');
   };
 
+  // Quando termina a criação de personagens
   const handleCharactersComplete = (characters) => {
     setCreatedCharacters(characters);
+    setEditingCharacters(characters);
     setCurrentView('scenario-selection');
   };
 
+  // Volta à homepage
   const handleBackToHome = () => {
     setCurrentView('homepage');
   };
 
+  // Quando termina a seleção de cenário
   const handleScenarioComplete = () => {
-    // Navigate to Theater view after completing scenario
     setCurrentView('theater');
   };
 
+  // Renderiza a view de criação de personagem
   if (currentView === 'character-creation') {
     return (
       <CharacterCreation 
         onBack={handleBackToHome}
         onComplete={handleCharactersComplete}
+        initialCharacters={editingCharacters.length > 0 ? editingCharacters : undefined}
       />
     );
   }
 
-  if (currentView === 'scenario-creation') {
-    return (
-      <ScenarioCreation 
-        onBack={() => setCurrentView('character-creation')}
-        onComplete={handleScenarioComplete}
-        characters={createdCharacters}
-      />
-    );
-  }
-
+  // Renderiza a view de seleção de cenário
   if (currentView === 'scenario-selection') {
     return (
       <ScenarioSelection 
@@ -57,12 +63,17 @@ function Homepage() {
     );
   }
 
+  // Renderiza a view do teatro
   if (currentView === 'theater') {
     return (
-      <Theater onBack={() => setCurrentView('scenario-selection')} />
+      <Theater 
+        characters={createdCharacters} 
+        onBack={() => setCurrentView('scenario-selection')} 
+      />
     );
   }
 
+  // Renderiza a homepage inicial
   return (
     <div className="homepage">
       <h1>Início</h1>
@@ -78,4 +89,5 @@ function Homepage() {
   );
 }
 
+// Exporta o componente Homepage
 export default Homepage;
