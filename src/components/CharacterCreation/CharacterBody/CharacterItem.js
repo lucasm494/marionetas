@@ -1,5 +1,6 @@
 
 import { useRef, useEffect, useState } from 'react';
+import interact from 'interactjs';
 import './CharacterItem.css';
 
 function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId }) {
@@ -7,6 +8,7 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId }) {
   const containerRef = useRef();
   const [painting, setPainting] = useState(false);
   const [size, setSize] = useState({ width: 120, height: 120 });
+  const interactInstanceRef = useRef(null);
 
   useEffect(() => {
     const resize = () => {
@@ -41,19 +43,121 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId }) {
 
   const paint = (x, y) => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.globalCompositeOperation = 'source-atop';
     ctx.fillStyle = item.color;
     ctx.beginPath();
-    ctx.arc(x, y, Math.max(canvas.width, canvas.height) * 0.05, 0, Math.PI * 2);
+    const brushSize = Math.max(canvas.width, canvas.height) * 0.08;
+    ctx.arc(x, y, brushSize, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalCompositeOperation = 'source-over';
   };
 
   const save = () => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     onUpdate({ ...item, paintedImage: canvas.toDataURL('image/png') });
   };
+
+  // Setup Interact.js for painting when item has color
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !item.color) {
+      // Cleanup if no color
+      if (interactInstanceRef.current) {
+        interactInstanceRef.current.unset();
+        interactInstanceRef.current = null;
+      }
+      return;
+    }
+
+    // Detect rotation from parent panel
+    const getRotation = () => {
+      let element = containerRef.current;
+      while (element) {
+        const style = window.getComputedStyle(element);
+        const transform = style.transform;
+        if (transform && transform !== 'none') {
+          const match = transform.match(/matrix\(([^)]+)\)/);
+          if (match) {
+            const values = match[1].split(',').map(parseFloat);
+            const angle = Math.round(Math.atan2(values[1], values[0]) * (180 / Math.PI));
+            if (angle !== 0) return angle;
+          }
+        }
+        element = element.parentElement;
+      }
+      return 0;
+    };
+
+    // Initialize Interact.js draggable for painting
+    let isPainting = false;
+    
+    const interactInstance = interact(canvas)
+      .draggable({
+        listeners: {
+          start(event) {
+            event.preventDefault();
+            isPainting = true;
+            setPainting(true);
+            const rect = canvas.getBoundingClientRect();
+            const rotation = getRotation();
+            let x, y;
+            
+            if (rotation === 90 || rotation === -270) {
+              // Rotated 90 degrees clockwise
+              x = event.clientY - rect.top;
+              y = rect.width - (event.clientX - rect.left);
+            } else if (rotation === -90 || rotation === 270) {
+              // Rotated 90 degrees counter-clockwise
+              x = rect.height - (event.clientY - rect.top);
+              y = event.clientX - rect.left;
+            } else {
+              // No rotation
+              x = event.clientX - rect.left;
+              y = event.clientY - rect.top;
+            }
+            
+            paint(x, y);
+          },
+          move(event) {
+            if (!isPainting) return;
+            const rect = canvas.getBoundingClientRect();
+            const rotation = getRotation();
+            let x, y;
+            
+            if (rotation === 90 || rotation === -270) {
+              x = event.clientY - rect.top;
+              y = rect.width - (event.clientX - rect.left);
+            } else if (rotation === -90 || rotation === 270) {
+              x = rect.height - (event.clientY - rect.top);
+              y = event.clientX - rect.left;
+            } else {
+              x = event.clientX - rect.left;
+              y = event.clientY - rect.top;
+            }
+            
+            paint(x, y);
+          },
+          end() {
+            isPainting = false;
+            setPainting(false);
+            save();
+          }
+        }
+      })
+      .styleCursor(false);
+
+    interactInstanceRef.current = interactInstance;
+
+    return () => {
+      if (interactInstanceRef.current) {
+        interactInstanceRef.current.unset();
+        interactInstanceRef.current = null;
+      }
+    };
+  }, [item.color]);
 
   return (
     <div
@@ -83,11 +187,13 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId }) {
       <canvas
         ref={canvasRef}
         className="item-canvas"
-        onMouseDown={e => { if (item.color) { setPainting(true); paint(e.nativeEvent.offsetX, e.nativeEvent.offsetY); } }}
-        onMouseMove={e => { if (painting && item.color) paint(e.nativeEvent.offsetX, e.nativeEvent.offsetY); }}
-        onMouseUp={() => { if (painting) { setPainting(false); save(); } }}
-        onMouseLeave={() => { if (painting) { setPainting(false); save(); } }}
-        style={{ cursor: item.color ? 'crosshair' : 'default', width: '100%', height: '100%', display: 'block' }}
+        style={{ 
+          cursor: item.color ? 'crosshair' : 'default', 
+          width: '100%', 
+          height: '100%', 
+          display: 'block',
+          touchAction: item.color ? 'none' : 'auto'
+        }}
       />
     </div>
   );

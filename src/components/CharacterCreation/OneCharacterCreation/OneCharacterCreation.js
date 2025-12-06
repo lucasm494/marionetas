@@ -81,21 +81,11 @@ const [isAddingNewCharacter, setIsAddingNewCharacter] = useState(false);
   const handleColorSelect = (colorItem) => {
   console.log(`🎨 [${panelId}] Color clicked:`, colorItem.color, 'Current selected:', selectedColor);
   
-  // Se clicou na mesma cor, desseleciona
+  // Se clicou na mesma cor, desseleciona apenas a seleção visual
   if (selectedColor === colorItem.color) {
-    console.log(`🎨 [${panelId}] Color deselected`);
+    console.log(`🎨 [${panelId}] Color deselected from UI`);
     setSelectedColor(null);
-    
-    if (selectedItem) {
-      const updatedItems = characterItems.map(item =>
-        item.id === selectedItem.id ? { 
-          ...item, 
-          color: null,
-          paintedImage: null // ← Remove a imagem pintada
-        } : item
-      );
-      setCharacterItems(updatedItems);
-    }
+    // Don't remove color from item - keep it so painting still works
     return;
   }
   
