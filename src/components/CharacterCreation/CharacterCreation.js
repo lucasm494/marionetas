@@ -58,6 +58,19 @@ function CharacterCreation({ onBack, onComplete, initialCharacters }) {
     if (panel === 'right') setRightDone(false);
   };
 
+  const handleRemoveCharacter = (characterId) => {
+    console.log(`Removendo personagem: ${characterId}`);
+    setCharacters(prev => prev.filter(char => char.id !== characterId));
+    
+    // Se o personagem removido é o atual em algum painel, limpe-o
+    if (currentCharacterLeft && currentCharacterLeft.id === characterId) {
+      setCurrentCharacterLeft(null);
+    }
+    if (currentCharacterRight && currentCharacterRight.id === characterId) {
+      setCurrentCharacterRight(null);
+    }
+  };
+
   // Cria um novo personagem vazio se o atual tiver itens
   // Permite criar novo personagem mesmo se o outro painel estiver a editar
   const handleAddNewCharacter = (currentPanelCharacter) => {
@@ -160,6 +173,7 @@ function CharacterCreation({ onBack, onComplete, initialCharacters }) {
           existingCharacters={getSavedCharacters()}
           onAddNewCharacter={() => handleAddNewCharacter(currentCharacterLeft)}
           onSwitchCharacter={(char) => handleSwitchCharacter(char, 'left')}
+          onRemoveCharacter={handleRemoveCharacter}
           isActivePanel={true}
           panelId="left-panel"
           showWaitOverlay={leftDone && !rightDone}
@@ -179,6 +193,7 @@ function CharacterCreation({ onBack, onComplete, initialCharacters }) {
           existingCharacters={getSavedCharacters()}
           onAddNewCharacter={() => handleAddNewCharacter(currentCharacterRight)}
           onSwitchCharacter={(char) => handleSwitchCharacter(char, 'right')}
+          onRemoveCharacter={handleRemoveCharacter}
           isActivePanel={true}
           panelId="right-panel"
           showWaitOverlay={rightDone && !leftDone}

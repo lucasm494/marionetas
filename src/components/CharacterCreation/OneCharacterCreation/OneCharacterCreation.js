@@ -17,6 +17,7 @@ function OneCharacterCreation({
   existingCharacters = [],
   onAddNewCharacter,
   onSwitchCharacter,
+  onRemoveCharacter,
   isActivePanel = true,
   panelId // ← NOVO: Recebe identificador único
 }) {
@@ -206,7 +207,13 @@ const handleCharacterSelect = (character) => {
     console.log(`⏸️ [${panelId}] Ignorando seleção - a adicionar novo personagem`);
     return;
   }
-  
+
+  // Verifica se deve remover o atual antes de trocar
+  if (characterItems.length === 0 && currentCharacter && currentCharacter.id) {
+    console.log(`🗑️ [${panelId}] Removendo personagem vazio antes de trocar`);
+    onRemoveCharacter && onRemoveCharacter(currentCharacter.id);
+  }
+
   console.log(`👤 [${panelId}] Character selected:`, character.name);
 
   if (characterItems.length > 0){
