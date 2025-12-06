@@ -78,10 +78,19 @@ export const characterToolbarItems = {
       width: 50,
       height: 20
     },
+    {
+      id: 'acc1',
+      name: 'Pistol',
+      image: '/images/items/pistol.png',
+      type: 'accessory',
+      width: 100,
+      height: 20,
+    }
     // ... outros items
   ],
   colors: [
     { id: 'color1', name: 'Red', color: '#FF0000', type: 'color' },
+    { id: 'color2', name: 'Blue', color: '#0026ffff', type:'color'}
     // ... outras cores
   ]
 };

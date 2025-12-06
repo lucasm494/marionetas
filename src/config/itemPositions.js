@@ -20,7 +20,7 @@ export const itemPositions = {
   jacket: { x: 50, y: 42 },   // Casacos (mesmo que top)
   
   // ACESSÓRIOS
-  accessory: { x: 50, y: 30 }, // Colares, gravatas
+  accessory: { x: 30, y: 60 }, // Colares, gravatas
   bag: { x: 30, y: 60 },      // Bolsa no lado esquerdo
   watch: { x: 20, y: 50 },    // Relógio no pulso esquerdo
   
