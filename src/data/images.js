@@ -1,11 +1,10 @@
-// Centraliza os caminhos das imagens usadas no projeto
-// Para trocar uma imagem, basta alterar o caminho aqui
-
+//scenarios
 const images = {
-  hat1: require('../assets/items/hat1.png'),
-  hat2: require('../assets/items/hat2.png'),
-  hat3: require('../assets/items/hat3.png'),
-  // Adicione outras imagens conforme necessário
-};
+    scenario1:'images/scenarios/scenario1.png',
+    scenario2:'images/scenarios/scenario2.png',
+    scenario3:'images/scenarios/scenario3.png',
+    scenario4:'images/scenarios/scenario4.png',
+    corpo:'images/corpo.svg'
 
+}
 export default images;

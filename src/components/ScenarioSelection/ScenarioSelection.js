@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './ScenarioSelection.css';
 import Button from '../common/Button/Button';
-import images from '../../data/images';
 import DoneButton from '../common/DoneButton/DoneButton';
+import images from '../../data/images';
 
 
 function ScenarioSelection({ onBack , onComplete, initialScenario }) {
   const [selectedScenario, setSelectedScenario] = useState(null);
 
-  const scenarioImages = [images.hat1, images.hat2, images.hat3, images.hat1];
+  const scenarioImages = [images.scenario1, images.scenario2, images.scenario3, images.scenario4];
 
   const handleScenarioClick = (scenario) => {
     console.log('clicked: ', scenario);

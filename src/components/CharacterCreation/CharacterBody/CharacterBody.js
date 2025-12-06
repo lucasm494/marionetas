@@ -1,8 +1,8 @@
 import './CharacterBody.css';
 import CharacterItem from './CharacterItem';
 import { useEffect } from 'react';
-import characterSilhouette from '../../../assets/corpo.svg';
 import { getPositionForItemType } from '../../../config/itemPositions'; // ← Importa
+import images from '../../../data/images'
 
 function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem, onItemUpdate, panelId }) {
   const handleDragOver = (e) => {
@@ -82,7 +82,7 @@ function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem,
       {/* Silhueta vetorial */}
       <div className="character-silhouette">
         <img 
-          src={characterSilhouette} 
+          src={images.corpo}
           alt="Character Silhouette" 
           className="silhouette-image"
         />

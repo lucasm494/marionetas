@@ -8,8 +8,8 @@ function Theater({ onBack, characters, scenario }) {
 	const stageRef = useRef(null);
 	const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
 
-	const scenarioImages = [images.hat1, images.hat2, images.hat3, images.hat1];
-	const listCharacters = characters;
+	const scenarioImages = [images.scenario1, images.scenario2, images.scenario3, images.scenario4];
+	const characterImages = characters.map(char => char.characterImage);
 
 	// normalized position 0..1
 	// load saved positions from localStorage when available
@@ -85,12 +85,16 @@ function Theater({ onBack, characters, scenario }) {
 			{/* Full-viewport stage so the rectangle can move across entire screen */}
 			<div className="theater-stage" ref={stageRef} style={{ backgroundImage: `url(${scenarioImages[scenario-1]})` }}>
 				
-				<div
+				<img
 					className="theater-rect"
+					src={characterImages[0]}
+					alt=""
 					style={{ width: rectWidth + 'px', height: rectHeight + 'px', transform: `translate3d(${tx}px, ${ty}px, 0)` }}
 				/>
-				<div
+				<img
 					className="theater-rect theater-rect-2"
+					src={characterImages[1]}
+					alt=""
 					style={{ width: rect2Width + 'px', height: rect2Height + 'px', transform: `translate3d(${tx2}px, ${ty2}px, 0)` }}
 				/>
 			</div>

@@ -54,10 +54,6 @@
 
 .theater-rect {
   position: absolute;
-  background: #ff4d4f;
-  border: 2px solid rgba(0,0,0,0.12);
-  border-radius: 6px;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
   /* GPU-accelerated transform for smooth movement */
   transition: transform 160ms cubic-bezier(.22,.9,.3,1);
   will-change: transform;
@@ -88,6 +84,3 @@
   z-index: 1300;
 }
 
-.theater-rect-2 {
-  background: #4da3ff; /* different color */
-}

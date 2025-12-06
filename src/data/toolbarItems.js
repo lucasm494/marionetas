@@ -1,5 +1,4 @@
-// Importar todas as imagens
-import images from './images';
+// data/toolbarItems.js - VERSÃO SIMPLIFICADA
 
 export const characterTabConfig = {
   hats: { icon: '👒', title: 'Hats', category: 'head' },
@@ -12,43 +11,77 @@ export const characterTabConfig = {
 
 export const characterToolbarItems = {
   hats: [
-    { id: 'hat1', name: 'Baseball Cap', image: images.hat1, type: 'hat' },
-    { id: 'hat2', name: 'Top Hat', image: images.hat2, type: 'hat' },
-    { id: 'hat3', name: 'Crown', image: images.hat3, type: 'hat' }
+    { 
+      id: 'hat1', 
+      name: 'Baseball Cap', 
+      image: '/images/items/hat1.png',  // Caminho DIRETO
+      type: 'hat',
+      width: 60,
+      height: 40
+    },
+    { 
+      id: 'hat2', 
+      name: 'Top Hat', 
+      image: '/images/items/hat2.png',
+      type: 'hat',
+      width: 50,
+      height: 60
+    },
+    { 
+      id: 'hat3', 
+      name: 'Crown', 
+      image: '/images/items/hat3.png',
+      type: 'hat',
+      width: 55,
+      height: 45
+    }
   ],
   tops: [
-    { id: 'top1', name: 'T-Shirt', image: images.top1, type: 'top' },
-    { id: 'top2', name: 'Jacket', image: images.top2, type: 'top' },
-    { id: 'top3', name: 'Dress', image: images.top3, type: 'top' }
+    { 
+      id: 'top1', 
+      name: 'T-Shirt', 
+      image: '/images/items/top1.png',
+      type: 'top',
+      width: 80,
+      height: 100
+    },
+    // ... outros items
   ],
   pants: [
-    { id: 'pants1', name: 'Jeans', image: images.pants1, type: 'pants' },
-    { id: 'pants2', name: 'Shorts', image: images.pants2, type: 'pants' },
-    { id: 'pants3', name: 'Skirt', image: images.pants3, type: 'pants' }
+    { 
+      id: 'pants1', 
+      name: 'Jeans', 
+      image: '/images/items/pants1.png',
+      type: 'pants',
+      width: 70,
+      height: 90
+    },
+    // ... outros items
   ],
   shoes: [
-    { id: 'shoes1', name: 'Sneakers', image: images.shoes1, type: 'shoes' },
-    { id: 'shoes2', name: 'Boots', image: images.shoes2, type: 'shoes' },
-    { id: 'shoes3', name: 'Sandals', image: images.shoes3, type: 'shoes' }
+    { 
+      id: 'shoes1', 
+      name: 'Sneakers', 
+      image: '/images/items/shoes1.png',
+      type: 'shoes',
+      width: 40,
+      height: 30
+    },
+    // ... outros items
   ],
   accessories: [
-    { id: 'acc1', name: 'Glasses', image: images.acc1, type: 'accessory' },
-    { id: 'acc2', name: 'Watch', image: images.acc2, type: 'accessory' },
-    { id: 'acc3', name: 'Necklace', image: images.acc3, type: 'accessory' },
-    { id: 'acc4', name: 'Bag', image: images.acc4, type: 'bag' }
+    { 
+      id: 'acc1', 
+      name: 'Glasses', 
+      image: '/images/items/acc1.png',
+      type: 'accessory',
+      width: 50,
+      height: 20
+    },
+    // ... outros items
   ],
   colors: [
     { id: 'color1', name: 'Red', color: '#FF0000', type: 'color' },
-    { id: 'color2', name: 'Green', color: '#00FF00', type: 'color' },
-    { id: 'color3', name: 'Blue', color: '#0000FF', type: 'color' },
-    { id: 'color4', name: 'Yellow', color: '#FFFF00', type: 'color' },
-    { id: 'color5', name: 'Magenta', color: '#FF00FF', type: 'color' },
-    { id: 'color6', name: 'Cyan', color: '#00FFFF', type: 'color' },
-    { id: 'color7', name: 'Orange', color: '#FFA500', type: 'color' },
-    { id: 'color8', name: 'Purple', color: '#800080', type: 'color' },
-    { id: 'color9', name: 'Pink', color: '#FFC0CB', type: 'color' },
-    { id: 'color10', name: 'Brown', color: '#A52A2A', type: 'color' },
-    { id: 'color11', name: 'Black', color: '#000000', type: 'color' },
-    { id: 'color12', name: 'White', color: '#FFFFFF', type: 'color' }
+    // ... outras cores
   ]
 };
