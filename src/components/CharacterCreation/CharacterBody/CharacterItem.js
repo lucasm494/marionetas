@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react';
 import interact from 'interactjs';
 import './CharacterItem.css';
 
-function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId }) {
+function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selectedColor }) {
   const canvasRef = useRef();
   const containerRef = useRef();
   const [painting, setPainting] = useState(false);
@@ -60,11 +60,11 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId }) {
     onUpdate({ ...item, paintedImage: canvas.toDataURL('image/png') });
   };
 
-  // Setup Interact.js for painting when item has color
+  // Setup Interact.js for painting when item has color AND color is selected
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !item.color) {
-      // Cleanup if no color
+    if (!canvas || !item.color || !selectedColor) {
+      // Cleanup if no color or no color selected
       if (interactInstanceRef.current) {
         interactInstanceRef.current.unset();
         interactInstanceRef.current = null;
@@ -157,12 +157,12 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId }) {
         interactInstanceRef.current = null;
       }
     };
-  }, [item.color]);
+  }, [item.color, selectedColor]);
 
   return (
     <div
       ref={containerRef}
-      className={`character-item${isSelected ? ' selected' : ''}${item.color ? ' has-color' : ''}`}
+      className={`character-item${isSelected ? ' selected' : ''}${item.color && selectedColor ? ' has-color' : ''}`}
       style={{
         left: `${item.position.x}%`,
         top: `${item.position.y}%`,
@@ -175,9 +175,9 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId }) {
         e.stopPropagation(); 
         onSelect(item); 
       }}
-      draggable={!item.color}
+      draggable={!item.color || !selectedColor}
       onDragStart={e => {
-        if (item.color) return e.preventDefault();
+        if (item.color && selectedColor) return e.preventDefault();
         e.dataTransfer.setData('application/json', JSON.stringify(item));
         e.dataTransfer.effectAllowed = 'move';
         console.log(`👆 [${panelId || 'CharacterItem'}] Drag started for:`, item.name);
@@ -188,11 +188,11 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId }) {
         ref={canvasRef}
         className="item-canvas"
         style={{ 
-          cursor: item.color ? 'crosshair' : 'default', 
+          cursor: item.color && selectedColor ? 'crosshair' : 'default', 
           width: '100%', 
           height: '100%', 
           display: 'block',
-          touchAction: item.color ? 'none' : 'auto'
+          touchAction: item.color && selectedColor ? 'none' : 'auto'
         }}
       />
     </div>

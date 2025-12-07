@@ -82,6 +82,12 @@ const [isAddingNewCharacter, setIsAddingNewCharacter] = useState(false);
   const handleColorSelect = (colorItem) => {
   console.log(`🎨 [${panelId}] Color clicked:`, colorItem.color, 'Current selected:', selectedColor);
   
+  // Only process color selection if colors tab is open
+  if (openTab !== 'colors') {
+    console.log(`🎨 [${panelId}] Colors tab not open, ignoring color selection`);
+    return;
+  }
+  
   // Se clicou na mesma cor, desseleciona apenas a seleção visual
   if (selectedColor === colorItem.color) {
     console.log(`🎨 [${panelId}] Color deselected from UI`);
@@ -335,6 +341,7 @@ const handleCharacterSelect = (character) => {
           onItemUpdate={handleItemUpdate}
           selectedItem={selectedItem}
           panelId={panelId} // ← Passa panelId para o CharacterBody
+          selectedColor={selectedColor}
         />
         
         {/* Warning message */}

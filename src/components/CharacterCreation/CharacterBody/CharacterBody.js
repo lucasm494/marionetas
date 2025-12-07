@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { getPositionForItemType } from '../../../config/itemPositions'; // ← Importa
 import images from '../../../data/images'
 
-function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem, onItemUpdate, panelId }) {
+function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem, onItemUpdate, panelId, selectedColor }) {
   const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
@@ -97,6 +97,7 @@ function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem,
           onSelect={onItemSelect}
           onUpdate={handleItemUpdate}
           panelId={panelId}
+          selectedColor={selectedColor}
         />
       ))}
       
