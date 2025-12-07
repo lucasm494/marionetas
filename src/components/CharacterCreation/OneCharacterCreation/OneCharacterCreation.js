@@ -142,12 +142,7 @@ const [isAddingNewCharacter, setIsAddingNewCharacter] = useState(false);
   const handleItemSelect = (item) => {
     console.log(`📌 [${panelId}] Item selected:`, item.name, 'Current color:', item.color);
     setSelectedItem(item);
-    
-    if (item.color) {
-      setSelectedColor(item.color);
-    } else {
-      setSelectedColor(null);
-    }
+    // Don't auto-select color when selecting an item - user must explicitly select color
   };
 
   // Substitui a função toggleTab por:

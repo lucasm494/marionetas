@@ -342,7 +342,7 @@ return (
             {items.map((item, index) => (
               <div
                 key={item.id || index}
-                className={`carousel-item color-item ${selectedColor === item.color ? 'color-selected' : ''}`}
+                className={`carousel-item color-item ${selectedColor && selectedColor === item.color ? 'color-selected' : ''}`}
                 onClick={(e) => handleItemClick(e, item)}
                 title={item.name}
               >
