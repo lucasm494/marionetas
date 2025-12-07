@@ -51,6 +51,43 @@ function Carousel({
     
     console.log(`[carousel ${panelId}] Dragging: ${dragItem.name}, type: ${dragItem.type}, pointer: ${pointerId}`);
 
+    // Get the rotation of the target character body
+    const getRotationFromElement = (element) => {
+      const style = window.getComputedStyle(element);
+      const transform = style.transform;
+      if (transform && transform !== 'none') {
+        const match = transform.match(/matrix\(([^)]+)\)/);
+        if (match) {
+          const values = match[1].split(',').map(parseFloat);
+          const angle = Math.round(Math.atan2(values[1], values[0]) * (180 / Math.PI));
+          return angle !== 0 ? angle : 0;
+        }
+      }
+      return 0;
+    };
+
+    // Find the target character body to get its rotation
+    let targetRotation = 0;
+    const allBodies = document.querySelectorAll('.character-body');
+    for (let body of allBodies) {
+      const bodyPanelId = body.getAttribute('data-panel-id');
+      const rect = body.getBoundingClientRect();
+      const isNear = (
+        e.clientX >= rect.left - 100 &&
+        e.clientX <= rect.right + 100 &&
+        e.clientY >= rect.top - 100 &&
+        e.clientY <= rect.bottom + 100
+      );
+      
+      if (isNear && bodyPanelId === panelId) {
+        const parent = body.closest('.character-left, .character-right');
+        if (parent) {
+          targetRotation = getRotationFromElement(parent);
+        }
+        break;
+      }
+    }
+
     // ... (resto do código do ghost mantém-se igual)
     const ghost = document.createElement('div');
     ghost.className = 'drag-ghost';
@@ -84,7 +121,7 @@ function Carousel({
       position: 'fixed',
       left: `${e.clientX}px`,
       top: `${e.clientY}px`,
-      transform: 'translate(-50%, -50%)',
+      transform: `translate(-50%, -50%) rotate(${targetRotation}deg)`,
       pointerEvents: 'none',
       zIndex: 10000,
       borderRadius: '6px',
@@ -96,7 +133,7 @@ function Carousel({
     });
 
     document.body.appendChild(ghost);
-    activeDragsRef.current.set(pointerId, { item: dragItem, ghost });
+    activeDragsRef.current.set(pointerId, { item: dragItem, ghost, targetRotation });
 
     console.log(`[carousel ${panelId}] Ghost created for pointer ${pointerId}`);
   };
@@ -107,10 +144,11 @@ function Carousel({
       const drag = activeDragsRef.current.get(mv.pointerId);
       if (!drag) return;
 
-      const { ghost } = drag;
+      const { ghost, targetRotation } = drag;
       if (ghost && ghost.parentElement) {
         ghost.style.left = `${mv.clientX}px`;
         ghost.style.top = `${mv.clientY}px`;
+        ghost.style.transform = `translate(-50%, -50%) rotate(${targetRotation}deg)`;
       }
     };
 
@@ -118,7 +156,7 @@ function Carousel({
   const drag = activeDragsRef.current.get(up.pointerId);
   if (!drag) return;
 
-  const { item: dragItem, ghost } = drag;
+  const { item: dragItem, ghost, targetRotation } = drag;
 
   console.log(`[carousel ${panelId}] Soltando item ${dragItem.name}, type: ${dragItem.type}`);
 
@@ -184,7 +222,7 @@ function Carousel({
   if (ghost) {
     ghost.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
     ghost.style.opacity = '0';
-    ghost.style.transform = 'translate(-50%, -50%) scale(0.8)';
+    ghost.style.transform = `translate(-50%, -50%) scale(0.8) rotate(${targetRotation}deg)`;
     
     setTimeout(() => {
       if (ghost.parentElement) {
