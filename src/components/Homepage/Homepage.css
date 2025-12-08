@@ -1,7 +1,7 @@
 /* Homepage.css - Estilos para a página inicial */
 
 .homepage {
-  background-color: rgb(247, 220, 184); 
+  background-color: #EFE1C3; 
   min-height: 100vh;     /* Ocupa toda a altura da janela */
   display: flex;
   flex-direction: column;
