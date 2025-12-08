@@ -177,7 +177,8 @@ const handleAddCharacter = () => {
   setIsAddingNewCharacter(true);
   
   if (characterItems.length === 0) {
-    alert('Please add at least one item to your character before creating a new character.');
+    setShowWarning(true);
+    setTimeout(() => setShowWarning(false), 3000);
     setIsAddingNewCharacter(false);
     return;
   } else {
@@ -241,12 +242,6 @@ const handleCharacterSelect = (character) => {
   }
 };
 
-  const handleDesselect = () => { 
-
-
-    
-  }
-
 
   const handleDoneClick = () => {
     console.log(`✅ [${panelId}] Done clicked`);
@@ -293,7 +288,7 @@ const handleCharacterSelect = (character) => {
   }, []);
 
   return (
-    <div className="character-creation-page" data-panel-id={panelId} onClick={handleDesselect}>
+    <div className="character-creation-page" data-panel-id={panelId} >
       {/* Left Side - Grid interna */}
       <div className="left-side-tabs">
         <ReturnButton onClick={onBack} />
