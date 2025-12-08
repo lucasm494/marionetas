@@ -10,25 +10,24 @@
 
 export const itemPositions = {
   // CABEÇA
-  hat: { x: 50, y: 10 },      // Chapéus - topo da cabeça
-  hair: { x: 50, y: 15 },     // Cabelo - meio da cabeça
-  face: { x: 50, y: 22 },     // Rosto/olhos
-  glasses: { x: 50, y: 22 },  // Óculos (mesmo que face)
+  Normal: {x: 50, y:20},
+  Porco: {x: 50, y:19},
+  Lobo: {x: 50, y:17},
   
   // TRONCO
-  top1: { x: 51, y: 44 },      // Camisolas, camisas
-  jacket: { x: 50, y: 42 },   // Casacos (mesmo que top)
-  
-  // ACESSÓRIOS
-  accessory: { x: 30, y: 60 }, // Colares, gravatas
-  bag: { x: 30, y: 60 },      // Bolsa no lado esquerdo
-  watch: { x: 20, y: 50 },    // Relógio no pulso esquerdo
+  top1: { x: 51, y: 45 },
+  top2: {x: 50, y: 45},      // Camisolas, camisas
+  top3: { x: 50, y: 45 },   // Casacos (mesmo que top)
   
   // PERNAS
-  pants: { x: 50, y: 68 },    // Calças, saias
+  pants1: { x: 50, y: 69.5 },    // Calças, saias
+  pants2: { x: 50, y: 69.5 },
+  pants3: { x: 50, y: 72 },
   
   // PÉS
-  shoes: { x: 50, y: 92 },    // Sapatos, botas
+  shoes1: { x: 50, y: 90 },    // Sapatos, botas
+  shoes2: { x: 50, y: 90 },
+  shoes3: { x: 50, y: 90 },
   
   // DEFAULT (para tipos não especificados)
   default: { x: 50, y: 50 }

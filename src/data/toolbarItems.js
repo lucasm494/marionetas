@@ -12,28 +12,28 @@ export const characterTabConfig = {
 export const characterToolbarItems = {
   hats: [
     { 
-      id: 'hat1', 
+      id: 'Normal', 
       name: 'Normal', 
       image: '/images/items/cara_pessoa.png',  // Caminho DIRETO
       type: 'hat',
-      width: 60,
-      height: 40
+      width: 100,
+      height: 100
     },
     { 
       id: 'Porco', 
       name: 'Top Hat', 
       image: '/images/items/cara_porco.png',
       type: 'hat',
-      width: 50,
-      height: 60
+      width: 120,
+      height: 120
     },
     { 
       id: 'Lobo', 
       name: 'Crown', 
       image: '/images/items/cara_lobo.png',
       type: 'hat',
-      width: 55,
-      height: 45
+      width: 130,
+      height: 130
     }
   ],
   tops: [
@@ -46,24 +46,24 @@ export const characterToolbarItems = {
         x:51,
         y:38
       },
-      width: 234,
-      height: 143
+      width: 260,
+      height: 150
     },
     { 
       id: 'top2', 
       name: 'T-Shirt', 
       image: '/images/items/top2.png',
       type: 'top',
-      width: 132,
-      height: 144
+      width: 156,
+      height: 150
     },
     { 
       id: 'top3', 
       name: 'T-Shirt', 
       image: '/images/items/top3.png',
       type: 'top',
-      width: 80,
-      height: 100
+      width: 231,
+      height: 150
     }
     // ... outros items
   ],
@@ -73,24 +73,24 @@ export const characterToolbarItems = {
       name: 'Jeans', 
       image: '/images/items/pants1.png',
       type: 'pants',
-      width: 70,
-      height: 90
+      width: 180,
+      height: 100
     },
     { 
       id: 'pants2', 
       name: 'Jeans', 
       image: '/images/items/pants2.png',
       type: 'pants',
-      width: 70,
-      height: 90
+      width: 180,
+      height: 100
     },
     { 
       id: 'pants3', 
       name: 'Jeans', 
       image: '/images/items/pants3.png',
       type: 'pants',
-      width: 70,
-      height: 90
+      width: 180,
+      height: 125
     }
     // ... outros items
   ],
@@ -100,24 +100,24 @@ export const characterToolbarItems = {
       name: 'Sneakers', 
       image: '/images/items/shoes1.png',
       type: 'shoes',
-      width: 40,
-      height: 30
+      width: 250,
+      height: 70
     },
     { 
       id: 'shoes2', 
       name: 'Sneakers', 
       image: '/images/items/shoes2.png',
       type: 'shoes',
-      width: 40,
-      height: 30
+      width: 250,
+      height: 70
     },
     { 
       id: 'shoes3', 
       name: 'Sneakers', 
       image: '/images/items/shoes3.png',
       type: 'shoes',
-      width: 40,
-      height: 30
+      width: 250,
+      height: 70
     }
     // ... outros items
   ],
