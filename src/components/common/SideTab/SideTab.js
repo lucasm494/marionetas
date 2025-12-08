@@ -40,7 +40,7 @@ function SideTab({
       >
         { title !== "Colors" ?
           <div className="tab-icon">
-            <img src={icon} alt="" style={{width:30 , height:30}}></img>
+            <img src={icon} alt="" style={{width:40 , height:30}}></img>
           </div>
           : 
           <div className="tab-icon">

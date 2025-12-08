@@ -329,25 +329,14 @@ function Carousel({
   };
   
 return (
-    <div className="carousel" data-panel-id={panelId}>
-      {/* Navigation Arrows */}
-      {items.length > 3 && (
-        <>
-          <button className="carousel-arrow carousel-arrow-prev" onClick={prevItem}>
-            ‹
-          </button>
-          <button className="carousel-arrow carousel-arrow-next" onClick={nextItem}>
-            ›
-          </button>
-        </>
-      )}
+    <div className="carousel" data-panel-id={panelId} style={type === 'characters' ? {justifyContent: 'start'}:{}}>
 
       {/* Carousel Items */}
       <div 
         className="carousel-container"
         ref={carouselRef}
         onScroll={handleScroll}
-        style={{ touchAction: 'pan-x pinch-zoom' }}
+        style={type === 'items' ?{touchAction: 'pan-x pinch-zoom'} : {} } 
       >
         {type === 'items' ? (
           // Items Carousel
@@ -392,6 +381,10 @@ return (
         ) : type === 'characters' ? (
           // Characters Carousel
           <>
+            {/* Add New Button */}
+            <div className="carousel-item add-new-item" onClick={onAddNew}>
+              <img className="plus" src="/images/plus.png"></img>
+            </div>
             {items.map((character, index) => (
               <div
                 key={character.id || index}
@@ -400,14 +393,11 @@ return (
                 title={`${character.name} (${character.items?.length || 0} items)`}
               >
                 <div className="item-preview character-preview">
-                  {character.emoji || '👤'}
+                  <img src={character.items[0]?.image } alt="" style={{width:40}}></img>
                 </div>
               </div>
             ))}
-            {/* Add New Button */}
-            <div className="carousel-item add-new-item" onClick={onAddNew}>
-              <img className="plus" src="/images/plus.png"></img>
-            </div>
+            
           </>
         ) : null}
       </div>

@@ -1,11 +1,10 @@
 // data/toolbarItems.js - VERSÃO SIMPLIFICADA
 
 export const characterTabConfig = {
-  hats: { icon: '/images/items/hat2.png', title: 'Hats', category: 'head' },
+  hats: { icon: '/images/items/cara_pessoa.png', title: 'Hats', category: 'head' },
   tops: { icon: '/images/items/top1.png', title: 'Tops', category: 'torso' },
   pants: { icon: '/images/items/pants2.png', title: 'Pants', category: 'legs' },
   shoes: { icon: '/images/items/shoes1.png', title: 'Shoes', category: 'feet' },
-  accessories: { icon: '/images/items/pistol.png', title: 'Accessories', category: 'accessory' },
   colors: { icon: '🎨', title: 'Colors', category: 'colors' }
 };
 
@@ -121,31 +120,15 @@ export const characterToolbarItems = {
     }
     // ... outros items
   ],
-  accessories: [
-    { 
-      id: 'acc1', 
-      name: 'Glasses', 
-      image: '/images/items/acc1.png',
-      type: 'accessory',
-      width: 50,
-      height: 20
-    },
-    {
-      id: 'acc2',
-      name: 'Pistol',
-      image: '/images/items/pistol.png',
-      type: 'accessory',
-      width: 100,
-      height: 20,
-    }
-    // ... outros items
-  ],
   colors: [
     { id: 'color1', name: 'Red', color: '#FF0000', type: 'color' },
     { id: 'color2', name: 'Blue', color: '#0026ffff', type:'color'},
     { id: 'color3', name: 'Pink', color: '#ee00ffff', type:'color'},
     { id: 'color4', name: 'Green', color: '#0dff00ff', type:'color'},
-    { id: 'color5', name: 'Yellow', color: '#ffc800ff', type:'color'}
+    { id: 'color5', name: 'Yellow', color: '#ffc800ff', type:'color'},
+    { id: 'color6', name: 'Laranja', color: '#ff6f00ff', type:'color'},
+    { id: 'color7', name: 'Brown', color: '#4e230eff', type:'color'},
+    { id: 'color8', name: 'Grey', color: '#4f4f4fff', type:'color'},
     // ... outras cores
   ]
 };

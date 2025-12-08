@@ -6,11 +6,10 @@
   overflow: hidden;
   background: transparent;
   cursor: move; /* Cursor de drag para o container */
-
 }
 
 .character-item.selected {
-
+  border-left: 5px rgb(231, 197, 129) dashed;
 }
 
 .item-canvas {

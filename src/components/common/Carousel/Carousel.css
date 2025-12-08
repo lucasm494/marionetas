@@ -13,13 +13,9 @@
   gap: 8px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  scrollbar-width: none;
   -ms-overflow-style: none;
   align-items: center;
-}
-
-.carousel-container::-webkit-scrollbar {
-  display: none;
+  
 }
 
 .carousel-item {
@@ -97,12 +93,12 @@
 .carousel-arrow {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  width: 30px;
-  height: 30px;
+  transform: translateY(18px);
+  width: 80px;
+  height: 15px;
   background: white;
   border: 2px solid #DDC28A;
-  border-radius: 50%;
+  border-radius: 20%;
   color: #DDC28A;
   font-size: 16px;
   font-weight: bold;

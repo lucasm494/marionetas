@@ -241,6 +241,13 @@ const handleCharacterSelect = (character) => {
   }
 };
 
+  const handleDesselect = () => { 
+
+
+    
+  }
+
+
   const handleDoneClick = () => {
     console.log(`✅ [${panelId}] Done clicked`);
     // Força save imediato antes de completar
@@ -286,7 +293,7 @@ const handleCharacterSelect = (character) => {
   }, []);
 
   return (
-    <div className="character-creation-page" data-panel-id={panelId}>
+    <div className="character-creation-page" data-panel-id={panelId} onClick={handleDesselect}>
       {/* Left Side - Grid interna */}
       <div className="left-side-tabs">
         <ReturnButton onClick={onBack} />
