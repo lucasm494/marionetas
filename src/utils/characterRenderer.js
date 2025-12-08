@@ -3,7 +3,7 @@
 // CONSTANTES PARA CONFIGURAÇÃO - AJUSTAR AQUI!
 const CONFIG = {
   // Tamanho do canvas final
-  CANVAS_WIDTH: 45,
+  CANVAS_WIDTH: 50,
   CANVAS_HEIGHT: 100,
   
   // Qualidade (1 = normal, 2 = HD, 3 = ultra HD)
@@ -11,14 +11,14 @@ const CONFIG = {
   
   // CORPO SVG
   BODY: {
-    IMAGE_PATH: '/images/corpo.svg',
+    IMAGE_PATH: '/images/inicial.png',
     
     // Posição do corpo no canvas (percentagem 0-100)
     POSITION_X: 50,   // Centro horizontal
-    POSITION_Y: 60,   // 65% do topo
+    POSITION_Y: 50,   // 65% do topo
     
     // Tamanho do corpo (ajustar conforme o SVG)
-    WIDTH: 40,
+    WIDTH: 50,
     HEIGHT: 80,
     
     // Para manter proporção do SVG (descomentar se quiser)
@@ -30,7 +30,7 @@ const CONFIG = {
   // ITENS - AJUSTAR TAMANHOS E POSIÇÕES
   ITEMS: {
     // Escala base de todos os itens
-    BASE_SCALE: 1,
+    BASE_SCALE: 0.6,
     
     // Tamanhos mínimos e máximos (em pixels)
     MIN_WIDTH: 20,
@@ -41,19 +41,17 @@ const CONFIG = {
     // Escalas específicas por tipo
     TYPE_SCALES: {
       hat: 0.5,       // Chapéus 20% maiores
-      top: 1.1,       // Camisas 10% maiores
+      top: 1.0,       // Camisas 10% maiores
       pants: 1.0,     // Calças tamanho normal
-      shoes: 0.9,     // Sapatos 10% menores
-      accessory: 0.2, // Acessórios 20% menores
+      shoes: 0.5,     // Sapatos 10% menores
     },
     
     // Posições relativas ao corpo (offset em pixels)
     POSITION_OFFSETS: {
       hat: { x: 0, y: 0 },   // Acima do corpo
-      top: { x: 0, y: -30 },    // No torso
-      pants: { x: 0, y: 80 },   // Abaixo do torso
-      shoes: { x: 0, y: 150 },  // Nos pés
-      accessory: { x: 50, y: 0 },
+      top: { x: 0, y: 0 },    // No torso
+      pants: { x: 0, y: 0 },   // Abaixo do torso
+      shoes: { x: 0, y: 0 },  // Nos pés
     },
   },
   
