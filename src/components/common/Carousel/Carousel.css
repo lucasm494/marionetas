@@ -8,6 +8,10 @@
   justify-content: center;
 }
 
+.carousel-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Opera */
+}
+
 .carousel-container {
   display: flex;
   gap: 8px;
