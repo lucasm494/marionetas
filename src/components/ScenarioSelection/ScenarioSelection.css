@@ -15,7 +15,7 @@
 }
 
 .scenario{
-  width: 420px;
+  width: 350px;
   height: auto;
   margin: 12px;
   padding: 6px;
@@ -24,7 +24,7 @@
   border: 2px solid transparent;
 }
 
-.scenario-selected{width: 420px;
+.scenario-selected{width: 320px;
   height: auto;
   margin: 12px;
   padding: 6px;
