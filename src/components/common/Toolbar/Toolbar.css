@@ -1,4 +1,5 @@
 .toolbar {
+  
   margin-bottom: 10px;
   border: 2px solid #000;
   border-radius: 10px;
@@ -37,6 +38,7 @@
 }
 
 .toolbar-content {
+  margin-top: 15px;
   padding: 15px;
   background-color: white;
   max-height: 300px;
@@ -47,7 +49,7 @@
 }
 
 .toolbar-item {
-  padding: 12px 8px;
+  padding: 35px 8px;
   border: 2px solid #e9ecef;
   border-radius: 8px;
   text-align: center;
