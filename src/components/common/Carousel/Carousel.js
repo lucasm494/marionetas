@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import './Carousel.css';
 import { categoryToTypeMap } from '../../../config/itemPositions'; // ← Importa
 // Adiciona esta importação no topo do ficheiro
-import { getPositionForItemType } from '../../../config/itemPositions';
+import { getPositionForItemID } from '../../../config/itemPositions';
 
 function Carousel({ 
   items = [], 
@@ -200,13 +200,14 @@ function Carousel({
       position.y = Math.max(0, Math.min(100, position.y));
     } else {
       // Para todos os outros itens, usa a POSIÇÃO FIXA do config
-      position = getPositionForItemType(dragItem.type);
-      console.log(`📍 [carousel ${panelId}] Posição fixa para ${dragItem.type}:`, position);
+      position = getPositionForItemID(dragItem.id);
+      console.log(`📍 [carousel ${panelId}] Posição fixa para ${dragItem.id}:`, position);
     }
 
     const dropDetail = {
       ...dragItem,
-      position: position
+      position: position,
+
     };
 
     // Disparar evento
@@ -330,7 +331,7 @@ function Carousel({
 return (
     <div className="carousel" data-panel-id={panelId}>
       {/* Navigation Arrows */}
-      {items.length > 1 && (
+      {items.length > 3 && (
         <>
           <button className="carousel-arrow carousel-arrow-prev" onClick={prevItem}>
             ‹
@@ -370,7 +371,7 @@ return (
                     <span>{item.emoji || '👕'}</span>
                   )}
                 </div>
-                <span className="item-name">{item.name}</span>
+            
               </div>
             ))}
           </>
@@ -383,9 +384,8 @@ return (
                 className={`carousel-item color-item ${selectedColor && selectedColor === item.color ? 'color-selected' : ''}`}
                 onClick={(e) => handleItemClick(e, item)}
                 title={item.name}
+                style={{ backgroundColor: item.color }}
               >
-                <div className="item-preview color-preview" style={{ backgroundColor: item.color }} />
-                <span className="item-name">{item.name}</span>
               </div>
             ))}
           </>
@@ -406,8 +406,7 @@ return (
             ))}
             {/* Add New Button */}
             <div className="carousel-item add-new-item" onClick={onAddNew}>
-              <div className="item-preview">+</div>
-              <span className="item-name">New Character</span>
+              <img className="plus" src="/images/plus.png"></img>
             </div>
           </>
         ) : null}

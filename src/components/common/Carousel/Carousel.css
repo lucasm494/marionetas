@@ -1,9 +1,11 @@
 .carousel {
   position: relative;
-  background: #f8f9fa;
   height: 100%;
   width: 100%;
   border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .carousel-container {
@@ -29,16 +31,13 @@
   align-items: center;
   gap: 4px;
   padding: 8px 6px;
-  background: white;
-  border: 2px solid #dee2e6;
   border-radius: 6px;
   cursor: grab;
   transition: all 0.2s ease;
-  text-align: center;
+  justify-content: center;
 }
 
 .carousel-item:hover {
-  border-color: #007bff;
   transform: translateY(-1px);
 }
 
@@ -53,7 +52,6 @@
   align-items: center;
   justify-content: center;
   font-size: 18px; /* Tamanho reduzido */
-  background: #f8f9fa;
   border-radius: 4px;
 }
 
@@ -77,21 +75,23 @@
 }
 
 .add-new-item {
-  border: 2px dashed #6c757d;
-  background: #f8f9fa;
+  border: 2px dashed #000000;
+  border-radius: 30px;
+  color: white;
+  font-size: 30px;
+  scale:0.8;
   cursor: pointer;
+}
+
+.plus{
+  width: 30px;
+  height: auto;
+  color: white;
 }
 
 .add-new-item:hover {
   border-color: #007bff;
   background: #e7f3ff;
-}
-
-.add-new-item .item-preview {
-  background: #6c757d;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
 }
 
 .carousel-arrow {
@@ -101,9 +101,9 @@
   width: 30px;
   height: 30px;
   background: white;
-  border: 2px solid #007bff;
+  border: 2px solid #DDC28A;
   border-radius: 50%;
-  color: #007bff;
+  color: #DDC28A;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -115,7 +115,7 @@
 }
 
 .carousel-arrow:hover {
-  background: #007bff;
+  background: #DDC28A;
   color: white;
 }
 
@@ -154,29 +154,17 @@
 
 .color-item {
   cursor: pointer;
+  border-radius: 40px;
+  width: 25px;
+  height: 20px;
 }
 
 .color-item:hover {
   transform: scale(1.1);
 }
 
-.color-preview {
-  border: 2px solid #ddd;
-  border-radius: 4px;
-}
-
-.color-item:hover .color-preview {
-  border-color: #333;
-}
-
 .color-selected {
   border: 3px solid #333 !important;
-  transform: scale(1.1);
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-}
-
-.color-selected .color-preview {
-  border: 2px solid #fff;
 }
 
 .character-preview {

@@ -3,7 +3,8 @@ import './SideTab.css';
 
 function SideTab({ 
   icon, 
-  title, 
+  title,
+  selectedColor, 
   isOpen, 
   onToggle, 
   children, 
@@ -37,14 +38,15 @@ function SideTab({
         data-tab-title={title}
         data-panel-id={panelId}
       >
-        <div className="tab-icon">
-          {icon}
-        </div>
-        {itemCount > 0 && (
-          <div className="tab-badge">
-            {itemCount}
+        { title !== "Colors" ?
+          <div className="tab-icon">
+            <img src={icon} alt="" style={{width:30 , height:30}}></img>
           </div>
-        )}
+          : 
+          <div className="tab-icon">
+            <div style={{width:30 , height:30, background:`${selectedColor ? selectedColor : "white"}`, borderRadius:30}}></div>
+          </div>
+        }
       </div>
 
       {/* Tab Content */}

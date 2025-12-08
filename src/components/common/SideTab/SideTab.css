@@ -32,13 +32,13 @@
 }
 
 .side-tab-left.side-tab-open .side-tab-content {
-  transform: translateX(0) scale(1);
+  transform: translateX(-50px) scale(1);
   opacity: 1;
   visibility: visible;
   margin-left: 0;
   border-radius: 30px; /* Mantém circular */
   height: 60px; /* Mantém mesma altura */
-  width: 300px; /* Expande apenas a largura */
+  width: 200px; /* Expande apenas a largura */
 }
 
 .side-tab-right {
@@ -47,6 +47,7 @@
 
 .side-tab-right .side-tab-trigger {
   order: 2;
+  background-color: #5CC8EE;
 }
 
 .side-tab-right .side-tab-content {
@@ -63,24 +64,25 @@
   border-radius: 30px; /* Mantém circular */
   width: 60px; /* Mesma largura do trigger */
   overflow: hidden;
+  background-color: #5CC8EE;
+  border:#5CC8EE;
 }
 
 .side-tab-right.side-tab-open .side-tab-content {
-  transform: translateX(0) scale(1);
+  transform: translateX(90px) scale(1);
   opacity: 1;
   visibility: visible;
   margin-right: 0;
-  border-radius: 30px; /* Mantém circular */
-  height: 60px; /* Mantém mesma altura */
-  width: 300px; /* Expande apenas a largura */
+  border-radius: 30px;
+  height: 60px;
+  width: 200px;
 }
 
 .side-tab-trigger {
-  width: 60px;
+  width: 80px;
   height: 60px;
-  background: #007bff;
-  border: 2px solid #fff;
-  border-radius: 50%;
+  background: #DDC28A;
+  border-radius: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,40 +94,30 @@
 }
 
 .side-tab-trigger:hover {
-  background: #0056b3;
   transform: scale(1.05);
 }
 
 .tab-icon {
+  transform: translate(10px);
   font-size: 24px;
   color: white;
-}
-
-.tab-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: #dc3545;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 12px;
-  font-weight: bold;
   display: flex;
   align-items: center;
-  justify-content: center;
-  border: 2px solid white;
+}
+
+.side-tab-right .tab-icon{
+  transform: translateX(-5px);
 }
 
 .side-tab-content {
-  background: white;
+  background: #DDC28A;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border: 2px solid #007bff;
+  border: 2px solid #DDC28A;
   transition: all 0.3s ease;
   z-index: 10;
   overflow: hidden;
   height: 100%;
+  
 }
 
 .tab-body {

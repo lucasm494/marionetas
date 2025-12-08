@@ -1,7 +1,7 @@
 import './CharacterBody.css';
 import CharacterItem from './CharacterItem';
 import { useEffect } from 'react';
-import { getPositionForItemType } from '../../../config/itemPositions'; // ← Importa
+import { getPositionForItemID } from '../../../config/itemPositions'; // ← Importa
 import images from '../../../data/images'
 
 function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem, onItemUpdate, panelId, selectedColor }) {
@@ -24,7 +24,7 @@ function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem,
         }
         
         // USA A FUNÇÃO DO CONFIG
-        const position = getPositionForItemType(item.type);
+        const position = getPositionForItemID(item.id);
         console.log(`📍 [${panelId}] Position from config:`, position, 'for type:', item.type);
         
         onItemDrop({ ...item, position });
@@ -44,7 +44,7 @@ function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem,
       }
       
       // USA A FUNÇÃO DO CONFIG
-      const position = e.detail.position || getPositionForItemType(e.detail.type);
+      const position = e.detail.position || getPositionForItemID(e.detail.id);
       
       const itemToDrop = {
         ...e.detail,

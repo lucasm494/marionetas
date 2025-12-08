@@ -26,8 +26,8 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    canvas.width = size.width;
-    canvas.height = size.height;
+    canvas.width = item.width;
+    canvas.height = item.height;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const img = new window.Image();
     img.onload = () => {
@@ -39,7 +39,7 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       }
     };
     img.src = item.image;
-  }, [item.image, item.paintedImage, size]);
+  }, [item.image, item.paintedImage, item.width , item.height]);
 
   const paint = (x, y) => {
     const canvas = canvasRef.current;
@@ -167,8 +167,7 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
         left: `${item.position.x}%`,
         top: `${item.position.y}%`,
         transform: 'translate(-50%, -50%)',
-        width: 120,
-        height: 120
+        
       }}
       onClick={e => { 
         console.log(`🖱️ [${panelId || 'CharacterItem'}] Item clicked:`, item.name);
@@ -189,8 +188,6 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
         className="item-canvas"
         style={{ 
           cursor: item.color && selectedColor ? 'crosshair' : 'default', 
-          width: '100%', 
-          height: '100%', 
           display: 'block',
           touchAction: item.color && selectedColor ? 'none' : 'auto'
         }}

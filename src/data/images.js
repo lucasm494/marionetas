@@ -4,7 +4,9 @@ const images = {
     scenario2:'images/scenarios/scenario2.png',
     scenario3:'images/scenarios/scenario3.png',
     scenario4:'images/scenarios/scenario4.png',
-    corpo:'images/corpo.svg'
+    corpo:'images/inicial.png',
+    corpolobo: 'images/lobo.png',
+    corpoporco:'images/porco.png'
 
 }
 export default images;

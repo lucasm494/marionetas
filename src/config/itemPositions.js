@@ -16,7 +16,7 @@ export const itemPositions = {
   glasses: { x: 50, y: 22 },  // Óculos (mesmo que face)
   
   // TRONCO
-  top: { x: 50, y: 42 },      // Camisolas, camisas
+  top1: { x: 51, y: 44 },      // Camisolas, camisas
   jacket: { x: 50, y: 42 },   // Casacos (mesmo que top)
   
   // ACESSÓRIOS
@@ -39,8 +39,8 @@ export const itemPositions = {
  * @param {string} itemType - Tipo do item (hat, top, pants, etc.)
  * @returns {Object} Posição {x, y}
  */
-export const getPositionForItemType = (itemType) => {
-  return itemPositions[itemType] || itemPositions.default;
+export const getPositionForItemID = (itemID) => {
+  return itemPositions[itemID] || itemPositions.default;
 };
 
 /**

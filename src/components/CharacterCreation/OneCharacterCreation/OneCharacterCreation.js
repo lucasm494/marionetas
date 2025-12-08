@@ -298,6 +298,7 @@ const handleCharacterSelect = (character) => {
               key={`${panelId}-${tabKey}`} // ← CHAVE ÚNICA
               icon={config.icon}
               title={config.title}
+              selectedColor={selectedColor}
               isOpen={openTab === tabKey}
               onToggle={() => toggleTab(tabKey)}
               itemCount={characterToolbarItems[tabKey]?.length || 0}
@@ -354,7 +355,7 @@ const handleCharacterSelect = (character) => {
       {/* Right Side - Grid interna */}
       <div className="right-side-tabs">
         <SideTab
-          icon="👥"
+          icon="/images/plus.png"
           title="Characters"
           isOpen={openTab === 'characters'}
           onToggle={() => toggleTab('characters')}

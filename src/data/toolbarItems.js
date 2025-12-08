@@ -1,11 +1,11 @@
 // data/toolbarItems.js - VERSÃO SIMPLIFICADA
 
 export const characterTabConfig = {
-  hats: { icon: '👒', title: 'Hats', category: 'head' },
-  tops: { icon: '👕', title: 'Tops', category: 'torso' },
-  pants: { icon: '👖', title: 'Pants', category: 'legs' },
-  shoes: { icon: '👟', title: 'Shoes', category: 'feet' },
-  accessories: { icon: '👓', title: 'Accessories', category: 'accessory' },
+  hats: { icon: '/images/items/hat2.png', title: 'Hats', category: 'head' },
+  tops: { icon: '/images/items/top1.png', title: 'Tops', category: 'torso' },
+  pants: { icon: '/images/items/pants2.png', title: 'Pants', category: 'legs' },
+  shoes: { icon: '/images/items/shoes1.png', title: 'Shoes', category: 'feet' },
+  accessories: { icon: '/images/items/pistol.png', title: 'Accessories', category: 'accessory' },
   colors: { icon: '🎨', title: 'Colors', category: 'colors' }
 };
 
@@ -13,24 +13,24 @@ export const characterToolbarItems = {
   hats: [
     { 
       id: 'hat1', 
-      name: 'Baseball Cap', 
-      image: '/images/items/hat1.png',  // Caminho DIRETO
+      name: 'Normal', 
+      image: '/images/items/cara_pessoa.png',  // Caminho DIRETO
       type: 'hat',
       width: 60,
       height: 40
     },
     { 
-      id: 'hat2', 
+      id: 'Porco', 
       name: 'Top Hat', 
-      image: '/images/items/hat2.png',
+      image: '/images/items/cara_porco.png',
       type: 'hat',
       width: 50,
       height: 60
     },
     { 
-      id: 'hat3', 
+      id: 'Lobo', 
       name: 'Crown', 
-      image: '/images/items/hat3.png',
+      image: '/images/items/cara_lobo.png',
       type: 'hat',
       width: 55,
       height: 45
@@ -42,9 +42,29 @@ export const characterToolbarItems = {
       name: 'T-Shirt', 
       image: '/images/items/top1.png',
       type: 'top',
+      position:{
+        x:51,
+        y:38
+      },
+      width: 234,
+      height: 143
+    },
+    { 
+      id: 'top2', 
+      name: 'T-Shirt', 
+      image: '/images/items/top2.png',
+      type: 'top',
+      width: 132,
+      height: 144
+    },
+    { 
+      id: 'top3', 
+      name: 'T-Shirt', 
+      image: '/images/items/top3.png',
+      type: 'top',
       width: 80,
       height: 100
-    },
+    }
     // ... outros items
   ],
   pants: [
@@ -56,6 +76,22 @@ export const characterToolbarItems = {
       width: 70,
       height: 90
     },
+    { 
+      id: 'pants2', 
+      name: 'Jeans', 
+      image: '/images/items/pants2.png',
+      type: 'pants',
+      width: 70,
+      height: 90
+    },
+    { 
+      id: 'pants3', 
+      name: 'Jeans', 
+      image: '/images/items/pants3.png',
+      type: 'pants',
+      width: 70,
+      height: 90
+    }
     // ... outros items
   ],
   shoes: [
@@ -67,6 +103,22 @@ export const characterToolbarItems = {
       width: 40,
       height: 30
     },
+    { 
+      id: 'shoes2', 
+      name: 'Sneakers', 
+      image: '/images/items/shoes2.png',
+      type: 'shoes',
+      width: 40,
+      height: 30
+    },
+    { 
+      id: 'shoes3', 
+      name: 'Sneakers', 
+      image: '/images/items/shoes3.png',
+      type: 'shoes',
+      width: 40,
+      height: 30
+    }
     // ... outros items
   ],
   accessories: [
@@ -79,7 +131,7 @@ export const characterToolbarItems = {
       height: 20
     },
     {
-      id: 'acc1',
+      id: 'acc2',
       name: 'Pistol',
       image: '/images/items/pistol.png',
       type: 'accessory',
@@ -90,7 +142,10 @@ export const characterToolbarItems = {
   ],
   colors: [
     { id: 'color1', name: 'Red', color: '#FF0000', type: 'color' },
-    { id: 'color2', name: 'Blue', color: '#0026ffff', type:'color'}
+    { id: 'color2', name: 'Blue', color: '#0026ffff', type:'color'},
+    { id: 'color3', name: 'Pink', color: '#ee00ffff', type:'color'},
+    { id: 'color4', name: 'Green', color: '#0dff00ff', type:'color'},
+    { id: 'color5', name: 'Yellow', color: '#ffc800ff', type:'color'}
     // ... outras cores
   ]
 };

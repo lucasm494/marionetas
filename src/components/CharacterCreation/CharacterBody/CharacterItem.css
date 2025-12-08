@@ -6,10 +6,11 @@
   overflow: hidden;
   background: transparent;
   cursor: move; /* Cursor de drag para o container */
+
 }
 
 .character-item.selected {
-  box-shadow: 0 0 0 3px #007bff;
+
 }
 
 .item-canvas {

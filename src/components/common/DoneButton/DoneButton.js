@@ -1,15 +1,14 @@
-import Button from '../Button/Button';
+import './DoneButton.css';
 
 function DoneButton({ onClick, disabled = false }) {
   return (
-    <Button 
-      variant="done" 
+    <div 
       onClick={onClick}
       disabled={disabled}
       className="done-button"
     >
-      DONE
-    </Button>
+      <img src='/images/check.png' alt="" style={{width:20}}/>
+    </div>
   );
 }
 
