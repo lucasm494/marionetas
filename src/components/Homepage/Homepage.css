@@ -1,7 +1,7 @@
 /* Homepage.css - Estilos para a página inicial */
 
 .homepage {
-  background-color: #fff; /* Fundo branco */
+  background-color: rgb(247, 220, 184); 
   min-height: 100vh;     /* Ocupa toda a altura da janela */
   display: flex;
   flex-direction: column;
@@ -13,5 +13,5 @@
 
 .homepage-buttons {
   display: flex;
-  gap: 20px; /* Espaço entre botões */
+  gap: 40px; /* Espaço entre botões */
 }
