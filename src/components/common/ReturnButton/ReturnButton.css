@@ -1,4 +1,8 @@
 .return-button {
+   position: absolute;     /* <-- impede que o flex do ScenarioSelection o afete */
+  top: 20px;
+  left: 20px;
+  
   cursor: pointer;
   margin-bottom: 40px;
   padding: 20px;
@@ -14,7 +18,7 @@
 }
 
 .return-button:hover {
-  background: #e9ecef;
+  background: #fcd494;
   transform: scale(1.1);
 }
 

@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './ScenarioSelection.css';
 import Button from '../common/Button/Button';
 import DoneButton from '../common/DoneButton/DoneButton';
-import images from '../../data/images';
 
+import images from '../../data/images';
+import ReturnButton from '../common/ReturnButton/ReturnButton';
+import '../common/ReturnButton/ReturnButton.css';
 
 function ScenarioSelection({ onBack , onComplete, initialScenario }) {
+  
   const [selectedScenario, setSelectedScenario] = useState(null);
 
   const scenarioImages = [images.scenario1, images.scenario2, images.scenario3, images.scenario4];
@@ -31,9 +34,13 @@ function ScenarioSelection({ onBack , onComplete, initialScenario }) {
   },[initialScenario]);
 
   return (
+<>
+    <ReturnButton onClick={onBack} />
+
     <div className="scenario-selection">
-      <h2>Seleção de Cenário</h2>
-      <p>Escolhe um dos 4.</p>
+
+      <h2>Escolhe um dos cenários</h2>
+     
       <div className="scenario-grid">
         {scenarioImages.map((src, idx) => (
           <img
@@ -54,9 +61,11 @@ function ScenarioSelection({ onBack , onComplete, initialScenario }) {
       </div>
 
 
-      <Button onClick={onBack}>Voltar</Button>
+    {/* <Button onClick={onBack}>Voltar</Button> 
+    <ReturnButton onClick={onBack} />*/ }
       <DoneButton onClick={handleDoneClick} />
     </div>
+    </>
   );
 }
 
