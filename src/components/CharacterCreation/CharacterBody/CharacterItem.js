@@ -3,12 +3,70 @@ import { useRef, useEffect, useState } from 'react';
 import interact from 'interactjs';
 import './CharacterItem.css';
 
-function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selectedColor }) {
+function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selectedColor, onTrashDrop }) {
   const canvasRef = useRef();
   const containerRef = useRef();
   const [painting, setPainting] = useState(false);
   const [size, setSize] = useState({ width: 120, height: 120 });
   const interactInstanceRef = useRef(null);
+	const activeTouchIdRef = useRef(null);
+	const touchStartRef = useRef({ x: 0, y: 0 });
+  const touchOffsetRef = useRef({ x: 0, y: 0 });
+  const [touchDragging, setTouchDragging] = useState(false);
+  const rafRef = useRef(null);
+	const dragStateRef = useRef({ rect: null, rotation: 0 });
+
+  // Read rotation from any parent transform (same logic used for painting)
+  const getRotation = () => {
+    let element = containerRef.current;
+    while (element) {
+      const style = window.getComputedStyle(element);
+      const transform = style.transform;
+      if (transform && transform !== 'none') {
+        const match = transform.match(/matrix\(([^)]+)\)/);
+        if (match) {
+          const values = match[1].split(',').map(parseFloat);
+          const angle = Math.round(Math.atan2(values[1], values[0]) * (180 / Math.PI));
+          if (angle !== 0) return angle;
+        }
+      }
+      element = element.parentElement;
+    }
+    return 0;
+  };
+
+  const toLocalPoint = (clientX, clientY, state) => {
+    const container = containerRef.current;
+    if (!container) return { x: 0, y: 0 };
+    const rect = state?.rect || container.getBoundingClientRect();
+    const rotation = state?.rotation ?? getRotation();
+    if (rotation === 90 || rotation === -270) {
+      return {
+        x: clientY - rect.top,
+        y: rect.width - (clientX - rect.left)
+      };
+    } else if (rotation === -90 || rotation === 270) {
+      return {
+        x: rect.height - (clientY - rect.top),
+        y: clientX - rect.left
+      };
+    }
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    };
+  };
+
+  const applyTransform = () => {
+    if (!containerRef.current) return;
+    const { x, y } = touchOffsetRef.current;
+    containerRef.current.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)`;
+  };
+
+  const scheduleTransform = () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(applyTransform);
+  };
 
   useEffect(() => {
     const resize = () => {
@@ -54,6 +112,82 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
     ctx.globalCompositeOperation = 'source-over';
   };
 
+  // --- Touch drag to trash support (mobile) ---
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const findTouchById = (touchList, id) => Array.from(touchList || []).find((t) => t.identifier === id);
+
+    const endTouchDrag = () => {
+      setTouchDragging(false);
+      touchOffsetRef.current = { x: 0, y: 0 };
+      scheduleTransform();
+      activeTouchIdRef.current = null;
+      dragStateRef.current = { rect: null, rotation: 0 };
+      window.removeEventListener('touchmove', handleTouchMove, { capture: false });
+      window.removeEventListener('touchend', handleTouchEnd, { capture: false });
+    };
+
+    const handleTouchMove = (e) => {
+      const id = activeTouchIdRef.current;
+      if (id == null) return;
+      const touch = findTouchById(e.touches, id);
+      if (!touch) return;
+      e.preventDefault();
+      const { x, y } = toLocalPoint(touch.clientX, touch.clientY, dragStateRef.current);
+      touchOffsetRef.current = {
+        x: x - touchStartRef.current.x,
+        y: y - touchStartRef.current.y
+      };
+      scheduleTransform();
+    };
+
+    const handleTouchEnd = (e) => {
+      const id = activeTouchIdRef.current;
+      if (id == null) return endTouchDrag();
+      const touch = findTouchById(e.changedTouches, id);
+      if (!touch) return;
+
+      const trashEl = document.querySelector(`.trash-button[data-panel-id="${panelId}"]`);
+      if (trashEl) {
+        const rect = trashEl.getBoundingClientRect();
+        const inside = touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom;
+        if (inside && onTrashDrop) {
+          onTrashDrop(item);
+        }
+      }
+
+      endTouchDrag();
+    };
+
+    const handleTouchStart = (e) => {
+      // Skip if in painting mode
+      if (item.color && selectedColor) return;
+      if (!e.touches || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      activeTouchIdRef.current = touch.identifier;
+			const rect = container.getBoundingClientRect();
+			const rotation = getRotation();
+			dragStateRef.current = { rect, rotation };
+      touchStartRef.current = toLocalPoint(touch.clientX, touch.clientY, dragStateRef.current);
+      setTouchDragging(true);
+      touchOffsetRef.current = { x: 0, y: 0 };
+      scheduleTransform();
+
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchend', handleTouchEnd, { passive: false });
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: false });
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart, { passive: false });
+      window.removeEventListener('touchmove', handleTouchMove, { passive: false });
+      window.removeEventListener('touchend', handleTouchEnd, { passive: false });
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [item, panelId, selectedColor, onTrashDrop]);
+
   const save = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -72,25 +206,6 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       return;
     }
 
-    // Detect rotation from parent panel
-    const getRotation = () => {
-      let element = containerRef.current;
-      while (element) {
-        const style = window.getComputedStyle(element);
-        const transform = style.transform;
-        if (transform && transform !== 'none') {
-          const match = transform.match(/matrix\(([^)]+)\)/);
-          if (match) {
-            const values = match[1].split(',').map(parseFloat);
-            const angle = Math.round(Math.atan2(values[1], values[0]) * (180 / Math.PI));
-            if (angle !== 0) return angle;
-          }
-        }
-        element = element.parentElement;
-      }
-      return 0;
-    };
-
     // Initialize Interact.js draggable for painting
     let isPainting = false;
     
@@ -101,43 +216,12 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
             event.preventDefault();
             isPainting = true;
             setPainting(true);
-            const rect = canvas.getBoundingClientRect();
-            const rotation = getRotation();
-            let x, y;
-            
-            if (rotation === 90 || rotation === -270) {
-              // Rotated 90 degrees clockwise
-              x = event.clientY - rect.top;
-              y = rect.width - (event.clientX - rect.left);
-            } else if (rotation === -90 || rotation === 270) {
-              // Rotated 90 degrees counter-clockwise
-              x = rect.height - (event.clientY - rect.top);
-              y = event.clientX - rect.left;
-            } else {
-              // No rotation
-              x = event.clientX - rect.left;
-              y = event.clientY - rect.top;
-            }
-            
+            const { x, y } = toLocalPoint(event.clientX, event.clientY);
             paint(x, y);
           },
           move(event) {
             if (!isPainting) return;
-            const rect = canvas.getBoundingClientRect();
-            const rotation = getRotation();
-            let x, y;
-            
-            if (rotation === 90 || rotation === -270) {
-              x = event.clientY - rect.top;
-              y = rect.width - (event.clientX - rect.left);
-            } else if (rotation === -90 || rotation === 270) {
-              x = rect.height - (event.clientY - rect.top);
-              y = event.clientX - rect.left;
-            } else {
-              x = event.clientX - rect.left;
-              y = event.clientY - rect.top;
-            }
-            
+            const { x, y } = toLocalPoint(event.clientX, event.clientY);
             paint(x, y);
           },
           end() {
@@ -166,8 +250,7 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       style={{
         left: `${item.position.x}%`,
         top: `${item.position.y}%`,
-        transform: 'translate(-50%, -50%)',
-        
+        transform: 'translate(-50%, -50%)', // live transform applied imperatively for performance
       }}
       onClick={e => { 
         console.log(`🖱️ [${panelId || 'CharacterItem'}] Item clicked:`, item.name);

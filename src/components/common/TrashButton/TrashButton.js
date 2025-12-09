@@ -1,6 +1,6 @@
 import './TrashButton.css';
 
-function TrashButton({ onDrop }) {
+function TrashButton({ onDrop, panelId }) {
   const handleDragOver = (e) => {
     e.preventDefault();
   };
@@ -18,6 +18,7 @@ function TrashButton({ onDrop }) {
       className="trash-button"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      data-panel-id={panelId}
       title="Drag items here to delete"
     >
       <img src="/images/trash.png" alt="" style={{width:30 , height:30}} />

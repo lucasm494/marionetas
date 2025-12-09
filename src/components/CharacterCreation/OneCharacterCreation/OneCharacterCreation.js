@@ -128,7 +128,8 @@ const [isAddingNewCharacter, setIsAddingNewCharacter] = useState(false);
 
   const handleTrashDrop = (itemData) => {
     try {
-      const item = JSON.parse(itemData);
+      const item = typeof itemData === 'string' ? JSON.parse(itemData) : itemData;
+      if (!item || !item.id) return;
       const updatedItems = characterItems.filter(i => i.id !== item.id);
       setCharacterItems(updatedItems);
       setSelectedItem(null);
@@ -340,6 +341,7 @@ const handleCharacterSelect = (character) => {
           selectedItem={selectedItem}
           panelId={panelId} // ← Passa panelId para o CharacterBody
           selectedColor={selectedColor}
+          onItemTrash={handleTrashDrop}
         />
         
         {/* Warning message */}
