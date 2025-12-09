@@ -39,7 +39,7 @@ function ScenarioSelection({ onBack , onComplete, initialScenario }) {
 
     <div className="scenario-selection">
 
-      <h2>Escolhe um dos cenários</h2>
+   {/*   <h2>Selecione um cenário:</h2> */  }
      
       <div className="scenario-grid">
         {scenarioImages.map((src, idx) => (

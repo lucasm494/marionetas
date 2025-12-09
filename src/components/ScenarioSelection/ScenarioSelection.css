@@ -15,18 +15,18 @@
 }
 
 .scenario{
-  width: 350px;
+  width: 420px;
   height: auto;
-  margin: 12px;
+  margin: 15px;
   padding: 6px;
   cursor: pointer;
   border-radius: 25px;
   border: 2px solid transparent;
 }
 
-.scenario-selected{width: 320px;
+.scenario-selected{width: 420px;
   height: auto;
-  margin: 12px;
+  margin: 15px;
   padding: 6px;
   cursor: pointer;
   border-radius: 25px;
@@ -36,7 +36,7 @@
 }
 
 .scenario-grid{
-  margin-top: 15px ;
+  margin: 3% 5%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

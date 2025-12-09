@@ -12,13 +12,13 @@
 }
 
 .button:hover {
-  background-color: #64adfb;
-   transform: scale(1.1);
+  background-color: #70b2e9;
+   transform: scale(1);
 }
 
 .button-primary {
-  background-color: #0094ea;
+  background-color: #4299e1;
   color: white;
-  border-color: #0094ea;
+  border-color: #4299e1;
   border-radius: 25px;
 }
