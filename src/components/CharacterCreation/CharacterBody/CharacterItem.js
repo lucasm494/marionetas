@@ -58,14 +58,20 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
   };
 
   const applyTransform = () => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
     const { x, y } = touchOffsetRef.current;
-    containerRef.current.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)`;
+    container.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)`;
   };
 
   const scheduleTransform = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(applyTransform);
+    rafRef.current = requestAnimationFrame(() => {
+      const container = containerRef.current;
+      if (!container) return;
+      const { x, y } = touchOffsetRef.current;
+      container.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)`;
+    });
   };
 
   useEffect(() => {
