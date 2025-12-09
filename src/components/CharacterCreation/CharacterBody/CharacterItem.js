@@ -58,14 +58,20 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
   };
 
   const applyTransform = () => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
     const { x, y } = touchOffsetRef.current;
-    containerRef.current.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)`;
+    container.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)`;
   };
 
   const scheduleTransform = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(applyTransform);
+    rafRef.current = requestAnimationFrame(() => {
+      const container = containerRef.current;
+      if (!container) return;
+      const { x, y } = touchOffsetRef.current;
+      container.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)`;
+    });
   };
 
   useEffect(() => {
@@ -136,6 +142,8 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       if (myTouchId !== null) return; // Already dragging
       if (!e.touches || e.touches.length === 0) return;
       
+      e.stopPropagation(); // Prevent this touch from affecting other items
+      
       const touch = e.touches[0];
       myTouchId = touch.identifier;
       
@@ -153,8 +161,15 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       const touch = findTouchById(e.touches, myTouchId);
       if (!touch) return;
       
-      // Only preventDefault for THIS specific touch
-      e.preventDefault();
+      // Only preventDefault if the touch is still within this container
+      const rect = container.getBoundingClientRect();
+      const isInside = touch.clientX >= rect.left && touch.clientX <= rect.right && 
+                       touch.clientY >= rect.top && touch.clientY <= rect.bottom;
+      
+      if (isInside) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       
       const { x, y } = toLocalPoint(touch.clientX, touch.clientY, dragStateRef.current);
       touchOffsetRef.current = {
