@@ -127,6 +127,9 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
     
     // Store this item's unique touch ID
     let myTouchId = null;
+    let moveHandler = null;
+    let endHandler = null;
+    let cancelHandler = null;
 
     const endTouchDrag = () => {
       setTouchDragging(false);
@@ -134,6 +137,14 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       scheduleTransform();
       myTouchId = null;
       dragStateRef.current = { rect: null, rotation: 0 };
+      
+      // Remove window listeners when drag ends
+      if (moveHandler) window.removeEventListener('touchmove', moveHandler);
+      if (endHandler) window.removeEventListener('touchend', endHandler);
+      if (cancelHandler) window.removeEventListener('touchcancel', cancelHandler);
+      moveHandler = null;
+      endHandler = null;
+      cancelHandler = null;
     };
 
     const handleTouchStart = (e) => {
@@ -168,64 +179,66 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       setTouchDragging(true);
       touchOffsetRef.current = { x: 0, y: 0 };
       scheduleTransform();
-    };
-
-    const handleTouchMove = (e) => {
-      if (myTouchId === null) return;
-      const touch = findTouchById(e.touches, myTouchId);
-      if (!touch) return;
       
-      // Only prevent default and handle move for THIS item's touch
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const { x, y } = toLocalPoint(touch.clientX, touch.clientY, dragStateRef.current);
-      touchOffsetRef.current = {
-        x: x - touchStartRef.current.x,
-        y: y - touchStartRef.current.y
+      // Create and attach handlers only when drag starts
+      moveHandler = (e) => {
+        if (myTouchId === null) return;
+        const touch = findTouchById(e.touches, myTouchId);
+        if (!touch) return;
+        
+        e.preventDefault();
+        
+        const { x, y } = toLocalPoint(touch.clientX, touch.clientY, dragStateRef.current);
+        touchOffsetRef.current = {
+          x: x - touchStartRef.current.x,
+          y: y - touchStartRef.current.y
+        };
+        scheduleTransform();
       };
-      scheduleTransform();
-    };
-
-    const handleTouchEnd = (e) => {
-      if (myTouchId === null) return;
-      const touch = findTouchById(e.changedTouches, myTouchId);
-      if (!touch) return;
-
-      e.stopPropagation();
-
-      const trashEl = document.querySelector(`.trash-button[data-panel-id="${panelId}"]`);
-      if (trashEl) {
-        const rect = trashEl.getBoundingClientRect();
-        const inside = touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom;
-        if (inside && onTrashDrop) {
-          onTrashDrop(item);
-        }
-      }
-
-      endTouchDrag();
-    };
-
-    const handleTouchCancel = (e) => {
-      if (myTouchId === null) return;
-      const touch = findTouchById(e.changedTouches, myTouchId);
-      if (!touch) return;
       
-      e.stopPropagation();
-      endTouchDrag();
+      endHandler = (e) => {
+        if (myTouchId === null) return;
+        const touch = findTouchById(e.changedTouches, myTouchId);
+        if (!touch) return;
+
+        e.stopPropagation();
+
+        const trashEl = document.querySelector(`.trash-button[data-panel-id="${panelId}"]`);
+        if (trashEl) {
+          const rect = trashEl.getBoundingClientRect();
+          const inside = touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom;
+          if (inside && onTrashDrop) {
+            onTrashDrop(item);
+          }
+        }
+
+        endTouchDrag();
+      };
+      
+      cancelHandler = (e) => {
+        if (myTouchId === null) return;
+        const touch = findTouchById(e.changedTouches, myTouchId);
+        if (!touch) return;
+        
+        e.stopPropagation();
+        endTouchDrag();
+      };
+      
+      // Attach window listeners only when actively dragging
+      window.addEventListener('touchmove', moveHandler, { passive: false });
+      window.addEventListener('touchend', endHandler, { passive: false });
+      window.addEventListener('touchcancel', cancelHandler, { passive: false });
     };
 
-    // Attach touchstart to container, move/end/cancel to window for proper multi-touch support
+    // Only attach touchstart to container
     container.addEventListener('touchstart', handleTouchStart, { passive: false });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    window.addEventListener('touchend', handleTouchEnd, { passive: false });
-    window.addEventListener('touchcancel', handleTouchCancel, { passive: false });
     
     return () => {
       container.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
-      window.removeEventListener('touchcancel', handleTouchCancel);
+      // Clean up any active drag listeners
+      if (moveHandler) window.removeEventListener('touchmove', moveHandler);
+      if (endHandler) window.removeEventListener('touchend', endHandler);
+      if (cancelHandler) window.removeEventListener('touchcancel', cancelHandler);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [item, panelId, selectedColor, onTrashDrop]);
