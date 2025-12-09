@@ -32,6 +32,9 @@ function Carousel({
 
     if (e.pointerType === 'mouse') return;
 
+    // Stop propagation only on the specific element being dragged
+    // This prevents this touch from triggering other handlers on THIS element
+    // but allows OTHER elements to receive their own touch/pointer events
     e.stopPropagation();
     e.preventDefault?.();
 
@@ -297,7 +300,7 @@ function Carousel({
     if (carouselRef.current) {
       carouselRef.current.style.scrollBehavior = 'auto';
     }
-    e.stopPropagation(); // Evitar conflito com drag
+    // Don't stopPropagation - allow other carousel items to receive their events
   };
 
   const handleTouchEnd = () => {
@@ -324,7 +327,11 @@ function Carousel({
     // Para tipos que não são drag (cores, characters)
     if (type === 'colors' || type === 'characters') {
       console.log(`[carousel ${panelId}] Item clicado: ${item.name || item.color}`);
-      onItemSelect(item);
+      e.stopPropagation(); // Prevent any other handlers
+      e.preventDefault(); // Prevent default behavior
+      if (onItemSelect) {
+        onItemSelect(item);
+      }
     }
   };
   
@@ -371,9 +378,26 @@ return (
               <div
                 key={item.id || index}
                 className={`carousel-item color-item ${selectedColor && selectedColor === item.color ? 'color-selected' : ''}`}
-                onClick={(e) => handleItemClick(e, item)}
+                onPointerDown={(e) => {
+                  // Use pointerdown for immediate response - this fires before any drag logic
+                  console.log(`[carousel ${panelId}] Color pointerdown: ${item.color}`);
+                  handleItemClick(e, item);
+                }}
+                onTouchStart={(e) => {
+                  // Also handle touch for better mobile support
+                  console.log(`[carousel ${panelId}] Color touchstart: ${item.color}`);
+                  e.stopPropagation();
+                  if (onItemSelect) {
+                    onItemSelect(item);
+                  }
+                }}
+                onClick={(e) => {
+                  // Fallback for mouse clicks
+                  console.log(`[carousel ${panelId}] Color click: ${item.color}`);
+                  handleItemClick(e, item);
+                }}
                 title={item.name}
-                style={{ backgroundColor: item.color }}
+                style={{ backgroundColor: item.color, pointerEvents: 'auto', cursor: 'pointer', touchAction: 'manipulation' }}
               >
               </div>
             ))}

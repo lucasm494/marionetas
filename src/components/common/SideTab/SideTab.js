@@ -14,9 +14,9 @@ function SideTab({
 }) {
   
   const handleToggle = (e) => {
-    // Previne comportamentos indesejados em multitouch
+    // Only prevent default for touch to avoid ghost clicks
+    // Don't stop propagation - allow other UI elements to receive events
     if (e.type === 'touchstart') {
-      e.stopPropagation();
       e.preventDefault();
     }
     
