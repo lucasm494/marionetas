@@ -125,7 +125,7 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
 
     const findTouchById = (touchList, id) => Array.from(touchList || []).find((t) => t.identifier === id);
     
-    // Store this item's unique touch ID with the container element itself
+    // Store this item's unique touch ID
     let myTouchId = null;
 
     const endTouchDrag = () => {
@@ -142,15 +142,29 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       if (myTouchId !== null) return; // Already dragging
       if (!e.touches || e.touches.length === 0) return;
       
+      // Find the touch that is actually on this element
+      const containerRect = container.getBoundingClientRect();
+      let touchOnThisElement = null;
+      
+      for (let i = 0; i < e.touches.length; i++) {
+        const t = e.touches[i];
+        if (t.clientX >= containerRect.left && t.clientX <= containerRect.right &&
+            t.clientY >= containerRect.top && t.clientY <= containerRect.bottom) {
+          touchOnThisElement = t;
+          break;
+        }
+      }
+      
+      if (!touchOnThisElement) return;
+      
       e.stopPropagation(); // Prevent this touch from affecting other items
       
-      const touch = e.touches[0];
-      myTouchId = touch.identifier;
+      myTouchId = touchOnThisElement.identifier;
       
 			const rect = container.getBoundingClientRect();
 			const rotation = getRotation();
 			dragStateRef.current = { rect, rotation };
-      touchStartRef.current = toLocalPoint(touch.clientX, touch.clientY, dragStateRef.current);
+      touchStartRef.current = toLocalPoint(touchOnThisElement.clientX, touchOnThisElement.clientY, dragStateRef.current);
       setTouchDragging(true);
       touchOffsetRef.current = { x: 0, y: 0 };
       scheduleTransform();
@@ -161,15 +175,9 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       const touch = findTouchById(e.touches, myTouchId);
       if (!touch) return;
       
-      // Only preventDefault if the touch is still within this container
-      const rect = container.getBoundingClientRect();
-      const isInside = touch.clientX >= rect.left && touch.clientX <= rect.right && 
-                       touch.clientY >= rect.top && touch.clientY <= rect.bottom;
-      
-      if (isInside) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      // Only prevent default and handle move for THIS item's touch
+      e.preventDefault();
+      e.stopPropagation();
       
       const { x, y } = toLocalPoint(touch.clientX, touch.clientY, dragStateRef.current);
       touchOffsetRef.current = {
@@ -184,6 +192,8 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       const touch = findTouchById(e.changedTouches, myTouchId);
       if (!touch) return;
 
+      e.stopPropagation();
+
       const trashEl = document.querySelector(`.trash-button[data-panel-id="${panelId}"]`);
       if (trashEl) {
         const rect = trashEl.getBoundingClientRect();
@@ -196,15 +206,26 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       endTouchDrag();
     };
 
-    // Attach listeners directly to container for touchstart, window for move/end
+    const handleTouchCancel = (e) => {
+      if (myTouchId === null) return;
+      const touch = findTouchById(e.changedTouches, myTouchId);
+      if (!touch) return;
+      
+      e.stopPropagation();
+      endTouchDrag();
+    };
+
+    // Attach touchstart to container, move/end/cancel to window for proper multi-touch support
     container.addEventListener('touchstart', handleTouchStart, { passive: false });
-    container.addEventListener('touchmove', handleTouchMove, { passive: false });
-    container.addEventListener('touchend', handleTouchEnd, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: false });
+    window.addEventListener('touchcancel', handleTouchCancel, { passive: false });
     
     return () => {
       container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchmove', handleTouchMove);
-      container.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchCancel);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [item, panelId, selectedColor, onTrashDrop]);
