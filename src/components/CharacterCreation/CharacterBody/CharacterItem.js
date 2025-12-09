@@ -118,6 +118,9 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
     if (!container) return;
 
     const findTouchById = (touchList, id) => Array.from(touchList || []).find((t) => t.identifier === id);
+    
+    // Create handler refs to maintain stable references across re-renders
+    const handlersRef = { move: null, end: null };
 
     const endTouchDrag = () => {
       setTouchDragging(false);
@@ -125,48 +128,27 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       scheduleTransform();
       activeTouchIdRef.current = null;
       dragStateRef.current = { rect: null, rotation: 0 };
-      window.removeEventListener('touchmove', handleTouchMove, { capture: false });
-      window.removeEventListener('touchend', handleTouchEnd, { capture: false });
-    };
-
-    const handleTouchMove = (e) => {
-      const id = activeTouchIdRef.current;
-      if (id == null) return;
-      const touch = findTouchById(e.touches, id);
-      if (!touch) return;
-      e.preventDefault();
-      const { x, y } = toLocalPoint(touch.clientX, touch.clientY, dragStateRef.current);
-      touchOffsetRef.current = {
-        x: x - touchStartRef.current.x,
-        y: y - touchStartRef.current.y
-      };
-      scheduleTransform();
-    };
-
-    const handleTouchEnd = (e) => {
-      const id = activeTouchIdRef.current;
-      if (id == null) return endTouchDrag();
-      const touch = findTouchById(e.changedTouches, id);
-      if (!touch) return;
-
-      const trashEl = document.querySelector(`.trash-button[data-panel-id="${panelId}"]`);
-      if (trashEl) {
-        const rect = trashEl.getBoundingClientRect();
-        const inside = touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom;
-        if (inside && onTrashDrop) {
-          onTrashDrop(item);
-        }
+      if (handlersRef.move) {
+        window.removeEventListener('touchmove', handlersRef.move, { passive: false });
+        handlersRef.move = null;
       }
-
-      endTouchDrag();
+      if (handlersRef.end) {
+        window.removeEventListener('touchend', handlersRef.end, { passive: false });
+        handlersRef.end = null;
+      }
     };
 
     const handleTouchStart = (e) => {
       // Skip if in painting mode
       if (item.color && selectedColor) return;
       if (!e.touches || e.touches.length === 0) return;
+      
+      // Stop propagation so other items don't receive this touch event
+      e.stopPropagation();
+      
       const touch = e.touches[0];
-      activeTouchIdRef.current = touch.identifier;
+      const touchId = touch.identifier;
+      activeTouchIdRef.current = touchId;
 			const rect = container.getBoundingClientRect();
 			const rotation = getRotation();
 			dragStateRef.current = { rect, rotation };
@@ -175,6 +157,46 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
       touchOffsetRef.current = { x: 0, y: 0 };
       scheduleTransform();
 
+      // Create move handler specific to this drag instance
+      const handleTouchMove = (e) => {
+        if (activeTouchIdRef.current !== touchId) return;
+        const touch = findTouchById(e.touches, touchId);
+        if (!touch) return;
+        
+        // Only preventDefault if this touch belongs to this item
+        const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+        if (targetElement && (targetElement === container || container.contains(targetElement))) {
+          e.preventDefault();
+        }
+        
+        const { x, y } = toLocalPoint(touch.clientX, touch.clientY, dragStateRef.current);
+        touchOffsetRef.current = {
+          x: x - touchStartRef.current.x,
+          y: y - touchStartRef.current.y
+        };
+        scheduleTransform();
+      };
+
+      // Create end handler specific to this drag instance
+      const handleTouchEnd = (e) => {
+        if (activeTouchIdRef.current !== touchId) return;
+        const touch = findTouchById(e.changedTouches, touchId);
+        if (!touch) return;
+
+        const trashEl = document.querySelector(`.trash-button[data-panel-id="${panelId}"]`);
+        if (trashEl) {
+          const rect = trashEl.getBoundingClientRect();
+          const inside = touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom;
+          if (inside && onTrashDrop) {
+            onTrashDrop(item);
+          }
+        }
+
+        endTouchDrag();
+      };
+
+      handlersRef.move = handleTouchMove;
+      handlersRef.end = handleTouchEnd;
       window.addEventListener('touchmove', handleTouchMove, { passive: false });
       window.addEventListener('touchend', handleTouchEnd, { passive: false });
     };
@@ -182,8 +204,12 @@ function CharacterItem({ item, isSelected, onSelect, onUpdate, panelId, selected
     container.addEventListener('touchstart', handleTouchStart, { passive: false });
     return () => {
       container.removeEventListener('touchstart', handleTouchStart, { passive: false });
-      window.removeEventListener('touchmove', handleTouchMove, { passive: false });
-      window.removeEventListener('touchend', handleTouchEnd, { passive: false });
+      if (handlersRef.move) {
+        window.removeEventListener('touchmove', handlersRef.move, { passive: false });
+      }
+      if (handlersRef.end) {
+        window.removeEventListener('touchend', handlersRef.end, { passive: false });
+      }
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [item, panelId, selectedColor, onTrashDrop]);
