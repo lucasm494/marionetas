@@ -1,31 +1,10 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import './theater.css';
 import ReturnButton from '../common/ReturnButton/ReturnButton';
 import MovementPad from './MovementPad/MovementPad';
+import ScreenRecorder from './ScreenRecorder/ScreenRecorder';
 import images from '../../data/images';
-
-// Keep every character and pad within the visible stage/pad area
-const clamp01 = (value, fallback = 0.5) => {
-	const num = Number.isFinite(value) ? value : fallback;
-	return Math.min(1, Math.max(0, num));
-};
-
-const getDefaultPosition = (index) => {
-	// Spread characters across columns and move to new rows as needed
-	const columns = [0.2, 0.4, 0.6, 0.8];
-	const col = index % columns.length;
-	const row = Math.floor(index / columns.length);
-	const y = Math.min(0.55 + row * 0.18, 0.9); // avoid going off-screen vertically
-	return { x: columns[col], y };
-};
-
-const normalizePosition = (pos, index) => {
-	if (!pos) return getDefaultPosition(index);
-	return {
-		x: clamp01(pos.x, getDefaultPosition(index).x),
-		y: clamp01(pos.y, getDefaultPosition(index).y)
-	};
-};
 
 function Theater({ onBack, characters = [], scenario }) {
 	const stageRef = useRef(null);
@@ -39,22 +18,16 @@ function Theater({ onBack, characters = [], scenario }) {
 		for (let i = 0; i < characters.length; i++) {
 			try {
 				const raw = localStorage.getItem(`theater.char${i}.pos`);
-				const parsed = raw ? JSON.parse(raw) : null;
-				positions.push(normalizePosition(parsed, i));
+				positions.push(raw ? JSON.parse(raw) : { 
+					x: 0.2 + (i * 0.3), // Spread characters across stage
+					y: 0.5 
+				});
 			} catch (err) {
-				positions.push(getDefaultPosition(i));
+				positions.push({ x: 0.2 + (i * 0.3), y: 0.5 });
 			}
 		}
 		return positions;
 	});
-
-	// Ensure positions array stays in sync with the number of characters
-	useEffect(() => {
-		setCharacterPositions((prev) => {
-			const next = characters.map((_, i) => normalizePosition(prev[i], i));
-			return next;
-		});
-	}, [characters.length]);
 
 	useEffect(() => {
 		const update = () => {
@@ -72,7 +45,7 @@ function Theater({ onBack, characters = [], scenario }) {
 	const updateCharacterPosition = (index, newPos) => {
 		setCharacterPositions(prev => {
 			const updated = [...prev];
-			updated[index] = normalizePosition(newPos, index);
+			updated[index] = newPos;
 			return updated;
 		});
 	};
@@ -95,7 +68,7 @@ function Theater({ onBack, characters = [], scenario }) {
 			<ReturnButton onClick={onBack} />
 
 			<div className="theater-center">
-				
+				{/* Aqui você pode adicionar outros elementos se necessário */}
 			</div>
 
 			{/* Full-viewport stage so the rectangle can move across entire screen */}
@@ -123,18 +96,19 @@ function Theater({ onBack, characters = [], scenario }) {
 				})}
 			</div>
 
-		{/* Movement pads for each character */}
-		{characters.map((character, index) => {
-			const pos = characterPositions[index] || { x: 0.5, y: 0.5 };
-			// Each pad is 1/8th of screen width (12.5%)
-			// Alternate left/right: index 0 = left, index 1 = right, index 2 = left, etc.
-			const isLeft = index % 2 === 0;
-			const padWidth = 12.5; // 1/8th of 100%
-		const padPosition = isLeft
-			? (Math.floor(index / 2) * padWidth) // Left side positions: 0%, 12.5%, 25%, etc.
-			: (100 - ((Math.floor(index / 2) + 1) * padWidth)); // Right side positions: 87.5%, 75%, etc.
-			
-			return (
+			{/* Adicione o ScreenRecorder aqui, em um local fixo */}
+			<ScreenRecorder />
+
+			{/* Movement pads for each character */}
+			{characters.map((character, index) => {
+				const pos = characterPositions[index] || { x: 0.5, y: 0.5 };
+				const isLeft = index % 2 === 0;
+				const padWidth = 12.5;
+				const padPosition = isLeft
+					? (Math.floor(index / 2) * padWidth)
+					: (100 - ((Math.floor(index / 2) + 1) * padWidth));
+				
+				return (
 					<div 
 						key={`pad-${index}`}
 						className="movement-pad-container" 

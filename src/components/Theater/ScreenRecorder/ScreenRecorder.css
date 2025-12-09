@@ -1,0 +1,54 @@
+/* ScreenRecorder.css */
+.screen-recorder {
+	position: fixed;
+	top: 1%;
+	right: 1%;
+	z-index: 2000;
+	background: rgba(255, 255, 255, 0.55);
+	border-radius: 20px;
+	padding: 8px;
+	border: 1px solid #ddd;
+	
+	font-family: Arial, sans-serif;
+}
+
+.recorder-controls {
+	display: flex;
+	justify-content: center;
+}
+
+.recorder-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	border-radius: 50%;
+	font-size: 8px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	padding: 0;
+	background: transparent;
+}
+
+.recorder-btn:hover {
+	transform: scale(1.1);
+}
+
+.recorder-icon > img {
+	width: 28px;
+	height: 28px;
+}
+
+.recording-info {
+	display: flex;
+	justify-content: center;
+	margin-top: 5px;
+}
+
+.time-value {
+	font-size: 12px;
+	font-weight: bold;
+	color: #2881c9;
+	font-family: 'Courier New', monospace;
+}
+
