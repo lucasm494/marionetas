@@ -102,11 +102,7 @@ function CharacterBody({ characterItems, onItemDrop, onItemSelect, selectedItem,
         />
       ))}
       
-      {characterItems.length === 0 && (
-        <div className="drop-hint">
-          <p>Arrasta os itens para criares a tua personagem!</p>
-        </div>
-      )}
+  
     </div>
   );
 }
