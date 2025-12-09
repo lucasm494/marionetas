@@ -4,6 +4,29 @@ import ReturnButton from '../common/ReturnButton/ReturnButton';
 import MovementPad from './MovementPad/MovementPad';
 import images from '../../data/images';
 
+// Keep every character and pad within the visible stage/pad area
+const clamp01 = (value, fallback = 0.5) => {
+	const num = Number.isFinite(value) ? value : fallback;
+	return Math.min(1, Math.max(0, num));
+};
+
+const getDefaultPosition = (index) => {
+	// Spread characters across columns and move to new rows as needed
+	const columns = [0.2, 0.4, 0.6, 0.8];
+	const col = index % columns.length;
+	const row = Math.floor(index / columns.length);
+	const y = Math.min(0.55 + row * 0.18, 0.9); // avoid going off-screen vertically
+	return { x: columns[col], y };
+};
+
+const normalizePosition = (pos, index) => {
+	if (!pos) return getDefaultPosition(index);
+	return {
+		x: clamp01(pos.x, getDefaultPosition(index).x),
+		y: clamp01(pos.y, getDefaultPosition(index).y)
+	};
+};
+
 function Theater({ onBack, characters = [], scenario }) {
 	const stageRef = useRef(null);
 	const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
@@ -16,16 +39,22 @@ function Theater({ onBack, characters = [], scenario }) {
 		for (let i = 0; i < characters.length; i++) {
 			try {
 				const raw = localStorage.getItem(`theater.char${i}.pos`);
-				positions.push(raw ? JSON.parse(raw) : { 
-					x: 0.2 + (i * 0.3), // Spread characters across stage
-					y: 0.5 
-				});
+				const parsed = raw ? JSON.parse(raw) : null;
+				positions.push(normalizePosition(parsed, i));
 			} catch (err) {
-				positions.push({ x: 0.2 + (i * 0.3), y: 0.5 });
+				positions.push(getDefaultPosition(i));
 			}
 		}
 		return positions;
 	});
+
+	// Ensure positions array stays in sync with the number of characters
+	useEffect(() => {
+		setCharacterPositions((prev) => {
+			const next = characters.map((_, i) => normalizePosition(prev[i], i));
+			return next;
+		});
+	}, [characters.length]);
 
 	useEffect(() => {
 		const update = () => {
@@ -43,7 +72,7 @@ function Theater({ onBack, characters = [], scenario }) {
 	const updateCharacterPosition = (index, newPos) => {
 		setCharacterPositions(prev => {
 			const updated = [...prev];
-			updated[index] = newPos;
+			updated[index] = normalizePosition(newPos, index);
 			return updated;
 		});
 	};

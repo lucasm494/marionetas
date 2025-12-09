@@ -10,6 +10,11 @@ function MovementPad({ value = { x: 0.5, y: 0.5 }, onChange }) {
 	// values: null (inactive), number (pointerId / touch identifier), or 'mouse'
 	const activeIdRef = useRef(null);
 
+	const safeValue = {
+		x: Math.min(1, Math.max(0, value?.x ?? 0.5)),
+		y: Math.min(1, Math.max(0, value?.y ?? 0.5))
+	};
+
 	// measure container size (the container will be sized by CSS)
 	useEffect(() => {
 		const container = containerRef.current;
@@ -39,8 +44,8 @@ function MovementPad({ value = { x: 0.5, y: 0.5 }, onChange }) {
 	// compute knob position such that the knob stays fully inside the pad
 	const knobSize = knobRef.current ? knobRef.current.offsetWidth : 18;
 	const knobHalf = knobSize / 2;
-	const knobLeft = (size.width - knobSize) * (value.x || 0) + knobHalf;
-	const knobTop = (size.height - knobSize) * (value.y || 0) + knobHalf;
+	const knobLeft = (size.width - knobSize) * safeValue.x + knobHalf;
+	const knobTop = (size.height - knobSize) * safeValue.y + knobHalf;
 
 	// Use explicit mouse/touch handlers attached when dragging starts.
 	useEffect(() => {
